@@ -57,11 +57,6 @@
     margin-left: 6px;
     font-weight: normal;
   }
-  .note {
-    font-size: 12px;
-    color: #888;
-    margin-top: 4px;
-  }
   input[type="text"],
   textarea {
     width: 100%;
@@ -105,6 +100,17 @@
   .options label.checked {
     background: #e7efff;
     border-color: #2c5aa0;
+  }
+  .other-input {
+    display: none;
+    margin: -2px 0 10px 32px;
+  }
+  .other-input.show {
+    display: block;
+  }
+  .other-input input {
+    font-size: 14px;
+    padding: 8px 10px;
   }
   .error {
     color: #e53e3e;
@@ -209,12 +215,15 @@
       <!-- Q2-A（いいえ用） -->
       <div class="field hidden" id="q2aField">
         <span class="label">Q2. やっていない理由を教えてください<span class="required">必須</span></span>
-        <div class="options">
+        <div class="options" data-other-group="q2a">
           <label><input type="checkbox" name="q2a" value="手間・管理が大変そう"> 手間・管理が大変そう</label>
           <label><input type="checkbox" name="q2a" value="紙の印刷・準備が面倒"> 紙の印刷・準備が面倒</label>
           <label><input type="checkbox" name="q2a" value="必要性を感じていなかった"> 必要性を感じていなかった</label>
           <label><input type="checkbox" name="q2a" value="やり方がわからなかった"> やり方がわからなかった</label>
-          <label><input type="checkbox" name="q2a" value="その他"> その他</label>
+          <label><input type="checkbox" name="q2a" value="その他" data-other="1"> その他</label>
+          <div class="other-input" data-other-input="q2a">
+            <input type="text" name="q2a_other" placeholder="自由記入">
+          </div>
         </div>
         <div class="error" data-error-for="q2a">1つ以上選択してください</div>
       </div>
@@ -222,12 +231,14 @@
       <!-- Q2-B（はい用） -->
       <div class="field hidden" id="q2bField">
         <span class="label">Q2. どんな方法でやっていますか？<span class="required">必須</span></span>
-        <div class="options">
+        <div class="options" data-other-group="q2b">
           <label><input type="checkbox" name="q2b" value="紙の問診票（来院時に記入）"> 紙の問診票（来院時に記入）</label>
-          <label><input type="checkbox" name="q2b" value="紙の問診票（郵送・事前送付）"> 紙の問診票（郵送・事前送付）</label>
           <label><input type="checkbox" name="q2b" value="LINEやメールで送付"> LINEやメールで送付</label>
           <label><input type="checkbox" name="q2b" value="自院のWebフォーム"> 自院のWebフォーム</label>
-          <label><input type="checkbox" name="q2b" value="その他"> その他</label>
+          <label><input type="checkbox" name="q2b" value="その他" data-other="1"> その他</label>
+          <div class="other-input" data-other-input="q2b">
+            <input type="text" name="q2b_other" placeholder="自由記入">
+          </div>
         </div>
         <div class="error" data-error-for="q2b">1つ以上選択してください</div>
       </div>
@@ -236,9 +247,9 @@
       <div class="field">
         <span class="label">Q3. 今の問診で困っていることはありますか？<span class="optional">任意・複数選択可</span></span>
         <div class="options">
-          <label><input type="checkbox" name="q3" value="当日の記入待ちで時間がかかる"> 当日の記入待ちで時間がかかる</label>
-          <label><input type="checkbox" name="q3" value="書き漏れ・情報不足が多い"> 書き漏れ・情報不足が多い</label>
           <label><input type="checkbox" name="q3" value="来院前に内容を確認できない"> 来院前に内容を確認できない</label>
+          <label><input type="checkbox" name="q3" value="書き漏れ・情報不足が多い"> 書き漏れ・情報不足が多い</label>
+          <label><input type="checkbox" name="q3" value="当日の記入待ちで時間がかかる"> 当日の記入待ちで時間がかかる</label>
           <label><input type="checkbox" name="q3" value="紙の管理・保管が大変"> 紙の管理・保管が大変</label>
           <label><input type="checkbox" name="q3" value="スタッフへの共有がしにくい"> スタッフへの共有がしにくい</label>
           <label><input type="checkbox" name="q3" value="特に困っていない"> 特に困っていない</label>
@@ -249,18 +260,16 @@
       <div class="field">
         <span class="label">Q4. 事前問診機能があると、どんな点が嬉しいですか？<span class="required">必須・最大3つ</span></span>
         <div class="options" id="q4Options">
-          <label><input type="checkbox" name="q4" value="来院前に患者さんの主訴・情報がわかり、心構えができる"> 来院前に患者さんの主訴・情報がわかり、心構えができる</label>
-          <label><input type="checkbox" name="q4" value="事前に治療方針を考えられる"> 事前に治療方針を考えられる</label>
+          <label><input type="checkbox" name="q4" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
+          <label><input type="checkbox" name="q4" value="アレルギー・禁忌事項を事前確認できる"> アレルギー・禁忌事項を事前確認できる</label>
+          <label><input type="checkbox" name="q4" value="事前に心構え・準備ができる"> 事前に心構え・準備ができる</label>
           <label><input type="checkbox" name="q4" value="当日の施術に集中できる"> 当日の施術に集中できる</label>
-          <label><input type="checkbox" name="q4" value="問診にかかる時間・手間を削減できる"> 問診にかかる時間・手間を削減できる</label>
-          <label><input type="checkbox" name="q4" value="問診の精度・記入漏れが減る"> 問診の精度・記入漏れが減る</label>
-          <label><input type="checkbox" name="q4" value="紙の問診票・カルテが不要になりペーパーレス化できる"> 紙の問診票・カルテが不要になりペーパーレス化できる</label>
-          <label><input type="checkbox" name="q4" value="患者さんが「ちゃんと診てもらえる」という安心感・信頼感を持って来院できる"> 患者さんが「ちゃんと診てもらえる」という安心感・信頼感を持って来院できる</label>
-          <label><input type="checkbox" name="q4" value="アレルギー・禁忌事項を事前確認でき、リスク管理できる"> アレルギー・禁忌事項を事前確認でき、リスク管理できる</label>
-          <label><input type="checkbox" name="q4" value="継続来院・リピート率の向上につながる"> 継続来院・リピート率の向上につながる</label>
-          <label><input type="checkbox" name="q4" value="追加施術や次回提案がしやすくなる"> 追加施術や次回提案がしやすくなる</label>
+          <label><input type="checkbox" name="q4" value="ペーパーレス化できる"> ペーパーレス化できる</label>
+          <label><input type="checkbox" name="q4" value="時間・手間を削減できる"> 時間・手間を削減できる</label>
           <label><input type="checkbox" name="q4" value="少人数・ワンオペでも回しやすくなる"> 少人数・ワンオペでも回しやすくなる</label>
-          <label><input type="checkbox" name="q4" value="他院との差別化・プロフェッショナルな印象を与えられる"> 他院との差別化・プロフェッショナルな印象を与えられる</label>
+          <label><input type="checkbox" name="q4" value="患者さんへ安心感・信頼感の提供"> 患者さんへ安心感・信頼感の提供</label>
+          <label><input type="checkbox" name="q4" value="リピート率の向上につながる"> リピート率の向上につながる</label>
+          <label><input type="checkbox" name="q4" value="プロフェッショナルな印象を与えられる"> プロフェッショナルな印象を与えられる</label>
         </div>
         <div class="error" data-error-for="q4">1つ以上選択してください</div>
       </div>
@@ -307,11 +316,12 @@ const submitBtn = document.getElementById('submitBtn');
 document.querySelectorAll('input[name="q1"]').forEach(r => {
   r.addEventListener('change', () => {
     const val = r.value;
-    // 一旦どちらも非表示＆クリア
     q2aField.classList.add('hidden');
     q2bField.classList.add('hidden');
-    form.querySelectorAll('input[name="q2a"]').forEach(c => c.checked = false);
-    form.querySelectorAll('input[name="q2b"]').forEach(c => c.checked = false);
+    form.querySelectorAll('input[name="q2a"], input[name="q2b"]').forEach(c => { c.checked = false; });
+    form.querySelectorAll('input[name="q2a_other"], input[name="q2b_other"]').forEach(c => { c.value = ''; });
+    document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
+    document.querySelectorAll('.options label.checked').forEach(l => l.classList.remove('checked'));
 
     if (val === 'いいえ、やっていない') {
       q2aField.classList.remove('hidden');
@@ -331,30 +341,37 @@ q4Options.addEventListener('change', (e) => {
   }
 });
 
+// 「その他」自由記入欄の表示切替
+document.querySelectorAll('input[data-other="1"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    const group = cb.closest('.options').dataset.otherGroup;
+    const input = document.querySelector(`[data-other-input="${group}"]`);
+    if (cb.checked) {
+      input.classList.add('show');
+      input.querySelector('input').focus();
+    } else {
+      input.classList.remove('show');
+      input.querySelector('input').value = '';
+    }
+  });
+});
+
 // チェック/ラジオの視覚的ハイライト
 document.querySelectorAll('.options').forEach(group => {
   group.addEventListener('change', () => {
     group.querySelectorAll('label').forEach(lbl => {
-      const input = lbl.querySelector('input');
-      if (input && input.checked) {
-        lbl.classList.add('checked');
-      } else {
-        lbl.classList.remove('checked');
-      }
+      const input = lbl.querySelector('input[type="checkbox"], input[type="radio"]');
+      if (input && input.checked) lbl.classList.add('checked');
+      else lbl.classList.remove('checked');
     });
   });
 });
 
-// エラー表示ヘルパー
 function showError(key, show) {
   const el = document.querySelector(`[data-error-for="${key}"]`);
-  if (el) {
-    if (show) el.classList.add('show');
-    else el.classList.remove('show');
-  }
+  if (el) el.classList.toggle('show', show);
 }
 
-// バリデーション
 function validate() {
   let hasError = false;
 
@@ -388,63 +405,68 @@ function validate() {
   return !hasError;
 }
 
-// 値の収集
+// 「その他」を「その他: 自由記入」に変換しつつ配列を返す
+function getCheckedWithOther(name) {
+  const otherEl = form.querySelector(`input[name="${name}_other"]`);
+  const otherText = otherEl ? otherEl.value.trim() : '';
+  return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => {
+    if (el.value === 'その他' && otherText) return `その他: ${otherText}`;
+    return el.value;
+  });
+}
+
 function collectValues() {
-  const getChecked = (name) => Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
   const q1 = form.querySelector('input[name="q1"]:checked');
   const q1Val = q1 ? q1.value : '';
   let q2 = [];
-  if (q1Val === 'いいえ、やっていない') q2 = getChecked('q2a');
-  else if (q1Val === 'はい、やっている') q2 = getChecked('q2b');
+  if (q1Val === 'いいえ、やっていない') q2 = getCheckedWithOther('q2a');
+  else if (q1Val === 'はい、やっている') q2 = getCheckedWithOther('q2b');
 
   return {
     clinicName: document.getElementById('clinicName').value.trim(),
     contactName: document.getElementById('contactName').value.trim(),
     q1: q1Val,
     q2: q2.join(', '),
-    q3: getChecked('q3').join(', '),
-    q4: getChecked('q4').join(', '),
-    q5: getChecked('q5').join(', '),
+    q3: getCheckedWithOther('q3').join(', '),
+    q4: getCheckedWithOther('q4').join(', '),
+    q5: getCheckedWithOther('q5').join(', '),
     q6: document.getElementById('q6').value.trim()
   };
 }
 
-// 送信
-form.addEventListener('submit', async (e) => {
+// 送信（fire-and-forget：完了画面を即表示し、送信はバックグラウンドで継続）
+function sendInBackground(payload) {
+  const body = JSON.stringify(payload);
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+    if (navigator.sendBeacon(GAS_URL, blob)) return;
+  }
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    keepalive: true,
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: body
+  }).catch(() => {});
+}
+
+form.addEventListener('submit', (e) => {
   e.preventDefault();
   errorSummary.classList.remove('show');
 
   if (!validate()) {
     errorSummary.classList.add('show');
-    // 最初のエラー位置までスクロール
     const firstErr = document.querySelector('.error.show');
     if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = '送信中...';
+  sendInBackground(collectValues());
 
-  const data = collectValues();
-
-  try {
-    // text/plainでCORSプリフライトを回避（GAS側はJSON.parseで受ける）
-    await fetch(GAS_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify(data)
-    });
-
-    // no-corsではレスポンス内容を読めないため、投げられた時点で完了扱い
-    document.getElementById('formWrap').classList.add('hidden');
-    document.getElementById('completeWrap').classList.remove('hidden');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  } catch (err) {
-    alert('送信に失敗しました。時間をおいて再度お試しください。');
-    submitBtn.disabled = false;
-    submitBtn.textContent = '送信する';
-  }
+  // 即座に完了画面へ切替（体感ゼロ秒）
+  document.getElementById('formWrap').classList.add('hidden');
+  document.getElementById('completeWrap').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 // 入力時にエラー解除
