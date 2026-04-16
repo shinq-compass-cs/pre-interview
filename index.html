@@ -195,26 +195,19 @@
         <div class="error" data-error-for="clinicName">院名を入力してください</div>
       </div>
 
-      <!-- 担当者名 -->
-      <div class="field">
-        <label class="label" for="contactName">お名前<span class="required">必須</span></label>
-        <input type="text" id="contactName" name="contactName" autocomplete="name">
-        <div class="error" data-error-for="contactName">お名前を入力してください</div>
-      </div>
-
       <!-- Q1 -->
       <div class="field">
-        <span class="label">Q1. 現在、来院前に患者さんへ問診を行っていますか？<span class="required">必須</span></span>
+        <span class="label">Q1. 来院前に患者さんへ問診を行っていますか？<span class="required">必須</span></span>
         <div class="options" id="q1Options">
-          <label><input type="radio" name="q1" value="はい、やっている"> はい、やっている</label>
-          <label><input type="radio" name="q1" value="いいえ、やっていない"> いいえ、やっていない</label>
+          <label><input type="radio" name="q1" value="はい（行っている）"> はい（行っている）</label>
+          <label><input type="radio" name="q1" value="いいえ（行っていない）"> いいえ（行っていない）</label>
         </div>
         <div class="error" data-error-for="q1">選択してください</div>
       </div>
 
       <!-- Q2-A（いいえ用） -->
       <div class="field hidden" id="q2aField">
-        <span class="label">Q2. やっていない理由を教えてください<span class="required">必須</span></span>
+        <span class="label">Q2. 行っていない理由を教えてください<span class="required">必須</span></span>
         <div class="options" data-other-group="q2a">
           <label><input type="checkbox" name="q2a" value="手間・管理が大変そう"> 手間・管理が大変そう</label>
           <label><input type="checkbox" name="q2a" value="紙の印刷・準備が面倒"> 紙の印刷・準備が面倒</label>
@@ -230,7 +223,7 @@
 
       <!-- Q2-B（はい用） -->
       <div class="field hidden" id="q2bField">
-        <span class="label">Q2. どんな方法でやっていますか？<span class="required">必須</span></span>
+        <span class="label">Q2. どんな方法で行っていますか？<span class="required">必須</span></span>
         <div class="options" data-other-group="q2b">
           <label><input type="checkbox" name="q2b" value="予約システム内の問診機能"> 予約システム内の問診機能</label>
           <label><input type="checkbox" name="q2b" value="LINEやメールで別途送信"> LINEやメールで別途送信</label>
@@ -247,7 +240,6 @@
       <div class="field">
         <span class="label">Q3. 今の問診で困っていることはありますか？<span class="optional">任意・複数選択可</span></span>
         <div class="options">
-          <label><input type="checkbox" name="q3" value="来院前に内容を確認できない"> 来院前に内容を確認できない</label>
           <label><input type="checkbox" name="q3" value="書き漏れ・情報不足が多い"> 書き漏れ・情報不足が多い</label>
           <label><input type="checkbox" name="q3" value="当日の記入待ちで時間がかかる"> 当日の記入待ちで時間がかかる</label>
           <label><input type="checkbox" name="q3" value="紙の管理・保管が大変"> 紙の管理・保管が大変</label>
@@ -319,9 +311,9 @@ document.querySelectorAll('input[name="q1"]').forEach(r => {
     document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
     document.querySelectorAll('.options label.checked').forEach(l => l.classList.remove('checked'));
 
-    if (val === 'いいえ、やっていない') {
+    if (val === 'いいえ（行っていない）') {
       q2aField.classList.remove('hidden');
-    } else if (val === 'はい、やっている') {
+    } else if (val === 'はい（行っている）') {
       q2bField.classList.remove('hidden');
     }
   });
@@ -375,20 +367,16 @@ function validate() {
   showError('clinicName', !clinicName);
   if (!clinicName) hasError = true;
 
-  const contactName = document.getElementById('contactName').value.trim();
-  showError('contactName', !contactName);
-  if (!contactName) hasError = true;
-
   const q1 = form.querySelector('input[name="q1"]:checked');
   showError('q1', !q1);
   if (!q1) hasError = true;
 
-  if (q1 && q1.value === 'いいえ、やっていない') {
+  if (q1 && q1.value === 'いいえ（行っていない）') {
     const q2a = form.querySelectorAll('input[name="q2a"]:checked');
     showError('q2a', q2a.length === 0);
     if (q2a.length === 0) hasError = true;
   }
-  if (q1 && q1.value === 'はい、やっている') {
+  if (q1 && q1.value === 'はい（行っている）') {
     const q2b = form.querySelectorAll('input[name="q2b"]:checked');
     showError('q2b', q2b.length === 0);
     if (q2b.length === 0) hasError = true;
@@ -415,12 +403,11 @@ function collectValues() {
   const q1 = form.querySelector('input[name="q1"]:checked');
   const q1Val = q1 ? q1.value : '';
   let q2 = [];
-  if (q1Val === 'いいえ、やっていない') q2 = getCheckedWithOther('q2a');
-  else if (q1Val === 'はい、やっている') q2 = getCheckedWithOther('q2b');
+  if (q1Val === 'いいえ（行っていない）') q2 = getCheckedWithOther('q2a');
+  else if (q1Val === 'はい（行っている）') q2 = getCheckedWithOther('q2b');
 
   return {
     clinicName: document.getElementById('clinicName').value.trim(),
-    contactName: document.getElementById('contactName').value.trim(),
     q1: q1Val,
     q2: q2.join(', '),
     q3: getCheckedWithOther('q3').join(', '),
@@ -466,7 +453,7 @@ form.addEventListener('submit', (e) => {
 });
 
 // 入力時にエラー解除
-['clinicName', 'contactName'].forEach(id => {
+['clinicName'].forEach(id => {
   document.getElementById(id).addEventListener('input', () => {
     if (document.getElementById(id).value.trim()) showError(id, false);
   });

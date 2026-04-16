@@ -16,7 +16,6 @@ const SHEET_NAME = "回答";
 const HEADERS = [
   "タイムスタンプ",
   "院名",
-  "お名前",
   "Q1：事前問診の実施有無",
   "Q2：理由または方法",
   "Q3：困っていること",
@@ -56,7 +55,6 @@ function doPost(e) {
     const row = [
       new Date(),
       data.clinicName || "",
-      data.contactName || "",
       data.q1 || "",
       data.q2 || "",
       data.q3 || "",
