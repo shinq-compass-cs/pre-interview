@@ -47,9 +47,13 @@
     font-size: 15px;
   }
   .required {
-    color: #e53e3e;
+    color: #888;
     font-size: 12px;
     margin-left: 6px;
+    transition: color 0.15s;
+  }
+  .field.has-error .required {
+    color: #e53e3e;
   }
   .optional {
     color: #888;
@@ -465,7 +469,11 @@ document.querySelectorAll('.options').forEach(group => {
 
 function showError(key, show) {
   const el = document.querySelector(`[data-error-for="${key}"]`);
-  if (el) el.classList.toggle('show', show);
+  if (el) {
+    el.classList.toggle('show', show);
+    const field = el.closest('.field');
+    if (field) field.classList.toggle('has-error', show);
+  }
 }
 
 function validate() {
