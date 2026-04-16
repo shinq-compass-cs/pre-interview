@@ -44,17 +44,15 @@ const TABS = {
       "タイムスタンプ",
       "院名",
       "Q2：行っていない理由",
-      "Q3：想定されるメリット",
-      "Q4：使ってみる上で気になること",
-      "Q5：自由記述"
+      "Q3：期待するメリット",
+      "Q4：自由記述"
     ],
     rowBuilder: (data) => [
       new Date(),
       data.clinicName || "",
       data.q2 || "",
       data.q3 || "",
-      data.q4 || "",
-      data.q5 || ""
+      data.q4 || ""
     ]
   }
 };

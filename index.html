@@ -277,6 +277,8 @@
             <label><input type="checkbox" name="q2a" value="やり方がわからない"> やり方がわからない</label>
             <label><input type="checkbox" name="q2a" value="手間・管理が大変そう"> 手間・管理が大変そう</label>
             <label><input type="checkbox" name="q2a" value="料金が掛かりそう"> 料金が掛かりそう</label>
+            <label><input type="checkbox" name="q2a" value="患者さんが入力してくれなさそう"> 患者さんが入力してくれなさそう</label>
+            <label><input type="checkbox" name="q2a" value="導入を検討したことがない"> 導入を検討したことがない</label>
             <label><input type="checkbox" name="q2a" value="その他" data-other="1"> その他</label>
             <div class="other-input" data-other-input="q2a">
               <input type="text" name="q2a_other" placeholder="自由記入">
@@ -285,9 +287,9 @@
           <div class="error" data-error-for="q2a">1つ以上選択してください</div>
         </div>
 
-        <!-- 未導入 Q3（メリット：必須・最大3つ） -->
+        <!-- 未導入 Q3（期待メリット：必須・最大3つ） -->
         <div class="field hidden" id="n_q3Field">
-          <span class="label">Q3. 事前問診は、どんなメリットがありそうですか？<span class="required">必須・最大3つ</span></span>
+          <span class="label">Q3. もし導入した場合、事前問診にどんなメリットを期待しますか？<span class="required">必須・最大3つ</span></span>
           <div class="options" id="n_q3Options">
             <label><input type="checkbox" name="n_q3" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
             <label><input type="checkbox" name="n_q3" value="事前に心構え・準備ができる"> 事前に心構え・準備ができる</label>
@@ -299,22 +301,10 @@
           <div class="error" data-error-for="n_q3">1つ以上選択してください</div>
         </div>
 
-        <!-- 未導入 Q4（気になること） -->
+        <!-- 未導入 Q4（自由記述） -->
         <div class="field hidden" id="n_q4Field">
-          <span class="label">Q4. 使ってみる上で、気になることはありますか？<span class="optional">任意・複数選択可</span></span>
-          <div class="options">
-            <label><input type="checkbox" name="n_q4" value="患者さんが回答してくれるか疑問"> 患者さんが回答してくれるか疑問</label>
-            <label><input type="checkbox" name="n_q4" value="設定・操作が難しそう"> 設定・操作が難しそう</label>
-            <label><input type="checkbox" name="n_q4" value="今の運用を変えるのが面倒"> 今の運用を変えるのが面倒</label>
-            <label><input type="checkbox" name="n_q4" value="料金が掛かる"> 料金が掛かる</label>
-            <label><input type="checkbox" name="n_q4" value="特になし"> 特になし</label>
-          </div>
-        </div>
-
-        <!-- 未導入 Q5（自由記述） -->
-        <div class="field hidden" id="n_q5Field">
-          <label class="label" for="n_q5">Q5. 当社の事前問診機能について、期待すること・不安なことを自由にお聞かせください。<span class="optional">任意</span></label>
-          <textarea id="n_q5" name="n_q5" placeholder="ご自由にご記入ください"></textarea>
+          <label class="label" for="n_q4">Q4. 当社の事前問診機能について、期待することを自由にお聞かせください。<span class="optional">任意</span></label>
+          <textarea id="n_q4" name="n_q4" placeholder="ご自由にご記入ください"></textarea>
         </div>
 
         <!-- 導入中 Q3（メリット：必須・最大3つ） -->
@@ -384,11 +374,10 @@ const y_q3Options = document.getElementById('y_q3Options');
 const q2aField = document.getElementById('q2aField');
 const n_q3Field = document.getElementById('n_q3Field');
 const n_q4Field = document.getElementById('n_q4Field');
-const n_q5Field = document.getElementById('n_q5Field');
 const n_q3Options = document.getElementById('n_q3Options');
 
 const yesFields = [q2bField, y_q3Field, y_q4Field, y_q5Field];
-const noFields = [q2aField, n_q3Field, n_q4Field, n_q5Field];
+const noFields = [q2aField, n_q3Field, n_q4Field];
 
 const errorSummary = document.getElementById('errorSummary');
 
@@ -398,10 +387,10 @@ function applyQ1(val) {
   form.querySelectorAll(
     'input[name="q2a"], input[name="q2b"], ' +
     'input[name="y_q3"], input[name="y_q4"], ' +
-    'input[name="n_q3"], input[name="n_q4"]'
+    'input[name="n_q3"]'
   ).forEach(c => { c.checked = false; });
   form.querySelectorAll('input[name="q2a_other"], input[name="q2b_other"]').forEach(c => { c.value = ''; });
-  form.querySelectorAll('#y_q5, #n_q5').forEach(t => { t.value = ''; });
+  form.querySelectorAll('#y_q5, #n_q4').forEach(t => { t.value = ''; });
   document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
   document.querySelectorAll('.options label.checked').forEach(l => {
     if (!l.closest('#q1Options')) l.classList.remove('checked');
@@ -543,8 +532,7 @@ function collectValues() {
       ...base,
       q2: getCheckedWithOther('q2a').join(', '),
       q3: getCheckedWithOther('n_q3').join(', '),
-      q4: getCheckedWithOther('n_q4').join(', '),
-      q5: document.getElementById('n_q5').value.trim()
+      q4: document.getElementById('n_q4').value.trim()
     };
   }
   return base;
