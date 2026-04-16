@@ -20,7 +20,7 @@ const VAL_NO = "いいえ（行っていない）";
 // タブ定義
 const TABS = {
   yes: {
-    name: "導入中",
+    name: "導入院",
     headers: [
       "タイムスタンプ",
       "院名",
@@ -39,7 +39,7 @@ const TABS = {
     ]
   },
   no: {
-    name: "未導入",
+    name: "未導入院",
     headers: [
       "タイムスタンプ",
       "院名",
