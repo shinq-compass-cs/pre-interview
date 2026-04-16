@@ -1,35 +1,71 @@
 /**
  * 事前問診ヒアリングフォーム受信用 GAS WebApp
  *
+ * Q1の回答により、書き込み先タブを振り分け：
+ *   - 「はい（行っている）」 → 「導入中」タブ（7列）
+ *   - 「いいえ（行っていない）」 → 「未導入」タブ（6列、Q3列なし）
+ *
  * デプロイ手順：
- *   1. Apps Scriptプロジェクトにこのファイルを貼り付ける
- *   2. SHEET_ID を対象のスプレッドシートIDに書き換える
- *   3. デプロイ → 新しいデプロイ → 種類「ウェブアプリ」
+ *   1. Apps Scriptプロジェクトに貼り付け
+ *   2. SHEET_ID を対象のスプレッドシートIDに
+ *   3. デプロイ → 新しいデプロイ → ウェブアプリ
  *      実行ユーザー：自分 / アクセス：全員
- *   4. 発行されたURLを form.html の GAS_URL に貼り付ける
  */
 
-const SHEET_ID = "ここにIDを貼る";
-const SHEET_NAME = "回答";
+const SHEET_ID = "1Efris-KIFPTL-vhVW7bHd_-PHep1dvbA3EtjTnAf3Q4";
 
-// ヘッダー定義（列順）
-const HEADERS = [
-  "タイムスタンプ",
-  "院名",
-  "Q1：事前問診の実施有無",
-  "Q2：理由または方法",
-  "Q3：困っていること",
-  "Q4：期待・メリット",
-  "Q5：懸念・ハードル",
-  "Q6：自由記述"
-];
+const VAL_YES = "はい（行っている）";
+const VAL_NO = "いいえ（行っていない）";
+
+// タブ定義
+const TABS = {
+  yes: {
+    name: "導入中",
+    headers: [
+      "タイムスタンプ",
+      "院名",
+      "Q2：どんな方法で行っているか",
+      "Q3：今の問診で困っていること",
+      "Q4：導入メリット",
+      "Q5：使っていて気になること",
+      "Q6：自由記述"
+    ],
+    rowBuilder: (data) => [
+      new Date(),
+      data.clinicName || "",
+      data.q2 || "",
+      data.q3 || "",
+      data.q4 || "",
+      data.q5 || "",
+      data.q6 || ""
+    ]
+  },
+  no: {
+    name: "未導入",
+    headers: [
+      "タイムスタンプ",
+      "院名",
+      "Q2：行っていない理由",
+      "Q4：導入メリット",
+      "Q5：使ってみる上で気になること",
+      "Q6：自由記述"
+    ],
+    rowBuilder: (data) => [
+      new Date(),
+      data.clinicName || "",
+      data.q2 || "",
+      data.q4 || "",
+      data.q5 || "",
+      data.q6 || ""
+    ]
+  }
+};
 
 /**
  * POST受信
  */
 function doPost(e) {
   try {
-    // form.htmlはtext/plainで送ってくるのでe.postData.contentsをパース
     let data = {};
     if (e && e.postData && e.postData.contents) {
       data = JSON.parse(e.postData.contents);
@@ -37,36 +73,34 @@ function doPost(e) {
       data = e.parameter;
     }
 
-    const ss = SpreadsheetApp.openById(SHEET_ID);
-    let sheet = ss.getSheetByName(SHEET_NAME);
+    // Q1で振り分け
+    let tab;
+    if (data.q1 === VAL_YES) tab = TABS.yes;
+    else if (data.q1 === VAL_NO) tab = TABS.no;
+    else {
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: "error", message: "invalid q1" }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
 
-    // シートが無ければ作成
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    let sheet = ss.getSheetByName(tab.name);
+
+    // タブが無ければ作成
     if (!sheet) {
-      sheet = ss.insertSheet(SHEET_NAME);
+      sheet = ss.insertSheet(tab.name);
     }
 
     // ヘッダー未設定なら1行目に書き込み
     if (sheet.getLastRow() === 0) {
-      sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+      sheet.getRange(1, 1, 1, tab.headers.length).setValues([tab.headers]);
       sheet.setFrozenRows(1);
     }
 
-    // 書き込み行
-    const row = [
-      new Date(),
-      data.clinicName || "",
-      data.q1 || "",
-      data.q2 || "",
-      data.q3 || "",
-      data.q4 || "",
-      data.q5 || "",
-      data.q6 || ""
-    ];
-
-    sheet.appendRow(row);
+    sheet.appendRow(tab.rowBuilder(data));
 
     return ContentService
-      .createTextOutput(JSON.stringify({ status: "ok" }))
+      .createTextOutput(JSON.stringify({ status: "ok", tab: tab.name }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
@@ -77,7 +111,7 @@ function doPost(e) {
 }
 
 /**
- * 動作確認用（ブラウザで直接開いたとき）
+ * 動作確認用
  */
 function doGet(e) {
   return ContentService
