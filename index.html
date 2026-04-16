@@ -273,10 +273,10 @@
         <div class="field hidden" id="q2aField">
           <span class="label">Q2. 行っていない理由を教えてください<span class="required">必須</span></span>
           <div class="options" data-other-group="q2a">
+            <label><input type="checkbox" name="q2a" value="直接問診した方が良い"> 直接問診した方が良い</label>
+            <label><input type="checkbox" name="q2a" value="やり方がわからない"> やり方がわからない</label>
             <label><input type="checkbox" name="q2a" value="手間・管理が大変そう"> 手間・管理が大変そう</label>
-            <label><input type="checkbox" name="q2a" value="紙の印刷・準備が面倒"> 紙の印刷・準備が面倒</label>
-            <label><input type="checkbox" name="q2a" value="必要性を感じていなかった"> 必要性を感じていなかった</label>
-            <label><input type="checkbox" name="q2a" value="やり方がわからなかった"> やり方がわからなかった</label>
+            <label><input type="checkbox" name="q2a" value="料金が掛かりそう"> 料金が掛かりそう</label>
             <label><input type="checkbox" name="q2a" value="その他" data-other="1"> その他</label>
             <div class="other-input" data-other-input="q2a">
               <input type="text" name="q2a_other" placeholder="自由記入">
@@ -285,7 +285,39 @@
           <div class="error" data-error-for="q2a">1つ以上選択してください</div>
         </div>
 
-        <!-- Q3（Q1=はい のみ） -->
+        <!-- 未導入 Q3（メリット：必須・最大3つ） -->
+        <div class="field hidden" id="n_q3Field">
+          <span class="label">Q3. 事前問診は、どんなメリットがありそうですか？<span class="required">必須・最大3つ</span></span>
+          <div class="options" id="n_q3Options">
+            <label><input type="checkbox" name="n_q3" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
+            <label><input type="checkbox" name="n_q3" value="事前に心構え・準備ができる"> 事前に心構え・準備ができる</label>
+            <label><input type="checkbox" name="n_q3" value="問診の時間（患者さんの記入時間）を削減できる"> 問診の時間（患者さんの記入時間）を削減できる</label>
+            <label><input type="checkbox" name="n_q3" value="紙の問診・カルテが不要になり効率化"> 紙の問診・カルテが不要になり効率化</label>
+            <label><input type="checkbox" name="n_q3" value="患者さんへ安心感・信頼感の提供"> 患者さんへ安心感・信頼感の提供</label>
+            <label><input type="checkbox" name="n_q3" value="問診の精度が上がる"> 問診の精度が上がる</label>
+          </div>
+          <div class="error" data-error-for="n_q3">1つ以上選択してください</div>
+        </div>
+
+        <!-- 未導入 Q4（気になること） -->
+        <div class="field hidden" id="n_q4Field">
+          <span class="label">Q4. 使ってみる上で、気になることはありますか？<span class="optional">任意・複数選択可</span></span>
+          <div class="options">
+            <label><input type="checkbox" name="n_q4" value="患者さんが回答してくれるか疑問"> 患者さんが回答してくれるか疑問</label>
+            <label><input type="checkbox" name="n_q4" value="設定・操作が難しそう"> 設定・操作が難しそう</label>
+            <label><input type="checkbox" name="n_q4" value="今の運用を変えるのが面倒"> 今の運用を変えるのが面倒</label>
+            <label><input type="checkbox" name="n_q4" value="料金が掛かる"> 料金が掛かる</label>
+            <label><input type="checkbox" name="n_q4" value="特になし"> 特になし</label>
+          </div>
+        </div>
+
+        <!-- 未導入 Q5（自由記述） -->
+        <div class="field hidden" id="n_q5Field">
+          <label class="label" for="n_q5">Q5. 当社の事前問診機能について、期待すること・不安なことを自由にお聞かせください。<span class="optional">任意</span></label>
+          <textarea id="n_q5" name="n_q5" placeholder="ご自由にご記入ください"></textarea>
+        </div>
+
+        <!-- 導入中 Q3（困っていること） -->
         <div class="field hidden" id="q3Field">
           <span class="label">Q3. 今の問診で困っていることはありますか？<span class="optional">任意・複数選択可</span></span>
           <div class="options">
@@ -297,8 +329,8 @@
           </div>
         </div>
 
-        <!-- Q4（共通） -->
-        <div class="field">
+        <!-- 導入中 Q4（メリット：必須・最大3つ） -->
+        <div class="field hidden" id="q4Field">
           <span class="label">Q4. 事前問診の導入メリットを教えてください<span class="required">必須・最大3つ</span></span>
           <div class="options" id="q4Options">
             <label><input type="checkbox" name="q4" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
@@ -311,34 +343,22 @@
           <div class="error" data-error-for="q4">1つ以上選択してください</div>
         </div>
 
-        <!-- Q5-B（はい用：使っていて気になること） -->
-        <div class="field hidden" id="q5bField">
+        <!-- 導入中 Q5（使っていて気になること） -->
+        <div class="field hidden" id="q5Field">
           <span class="label">Q5. 使っていて、気になることはありますか？<span class="optional">任意・複数選択可</span></span>
           <div class="options">
-            <label><input type="checkbox" name="q5b" value="回答率が低い"> 回答率が低い</label>
-            <label><input type="checkbox" name="q5b" value="システム料金が高い"> システム料金が高い</label>
-            <label><input type="checkbox" name="q5b" value="設問のカスタマイズ性が低い"> 設問のカスタマイズ性が低い</label>
-            <label><input type="checkbox" name="q5b" value="他システム（カルテ・予約）と連携できない"> 他システム（カルテ・予約）と連携できない</label>
-            <label><input type="checkbox" name="q5b" value="スマホ入力できない"> スマホ入力できない</label>
-            <label><input type="checkbox" name="q5b" value="サポート体制が不十分"> サポート体制が不十分</label>
-            <label><input type="checkbox" name="q5b" value="特にない"> 特にない</label>
+            <label><input type="checkbox" name="q5" value="回答率が低い"> 回答率が低い</label>
+            <label><input type="checkbox" name="q5" value="システム料金が高い"> システム料金が高い</label>
+            <label><input type="checkbox" name="q5" value="設問のカスタマイズ性が低い"> 設問のカスタマイズ性が低い</label>
+            <label><input type="checkbox" name="q5" value="他システム（カルテ・予約）と連携できない"> 他システム（カルテ・予約）と連携できない</label>
+            <label><input type="checkbox" name="q5" value="スマホ入力できない"> スマホ入力できない</label>
+            <label><input type="checkbox" name="q5" value="サポート体制が不十分"> サポート体制が不十分</label>
+            <label><input type="checkbox" name="q5" value="特にない"> 特にない</label>
           </div>
         </div>
 
-        <!-- Q5-A（いいえ用：使ってみる上で気になること） ※未導入側は後日更新予定 -->
-        <div class="field hidden" id="q5aField">
-          <span class="label">Q5. 使ってみる上で、気になることはありますか？<span class="optional">任意・複数選択可</span></span>
-          <div class="options">
-            <label><input type="checkbox" name="q5a" value="患者さんが回答してくれるか不安"> 患者さんが回答してくれるか不安</label>
-            <label><input type="checkbox" name="q5a" value="設定・操作が難しそう"> 設定・操作が難しそう</label>
-            <label><input type="checkbox" name="q5a" value="今の運用を変えるのが面倒"> 今の運用を変えるのが面倒</label>
-            <label><input type="checkbox" name="q5a" value="データの管理・セキュリティが心配"> データの管理・セキュリティが心配</label>
-            <label><input type="checkbox" name="q5a" value="特になし"> 特になし</label>
-          </div>
-        </div>
-
-        <!-- Q6（共通） -->
-        <div class="field">
+        <!-- 導入中 Q6（自由記述） -->
+        <div class="field hidden" id="q6Field">
           <label class="label" for="q6">Q6. 当社の事前問診機能について、期待することを自由にお聞かせください。<span class="optional">任意</span></label>
           <textarea id="q6" name="q6" placeholder="ご自由にご記入ください"></textarea>
         </div>
@@ -364,32 +384,45 @@ const q1Field = document.getElementById('q1Field');
 const restOfForm = document.getElementById('restOfForm');
 const q1Display = document.getElementById('q1Display');
 const q1ResetBtn = document.getElementById('q1ResetBtn');
-const q2aField = document.getElementById('q2aField');
+
+// 導入中用フィールド
 const q2bField = document.getElementById('q2bField');
 const q3Field = document.getElementById('q3Field');
-const q5aField = document.getElementById('q5aField');
-const q5bField = document.getElementById('q5bField');
+const q4Field = document.getElementById('q4Field');
+const q5Field = document.getElementById('q5Field');
+const q6Field = document.getElementById('q6Field');
 const q4Options = document.getElementById('q4Options');
+
+// 未導入用フィールド
+const q2aField = document.getElementById('q2aField');
+const n_q3Field = document.getElementById('n_q3Field');
+const n_q4Field = document.getElementById('n_q4Field');
+const n_q5Field = document.getElementById('n_q5Field');
+const n_q3Options = document.getElementById('n_q3Options');
+
+const yesFields = [q2bField, q3Field, q4Field, q5Field, q6Field];
+const noFields = [q2aField, n_q3Field, n_q4Field, n_q5Field];
+
 const errorSummary = document.getElementById('errorSummary');
 
 function applyQ1(val) {
-  // 依存領域をクリア
-  [q2aField, q2bField, q3Field, q5aField, q5bField].forEach(f => f.classList.add('hidden'));
-  form.querySelectorAll('input[name="q2a"], input[name="q2b"], input[name="q3"], input[name="q5a"], input[name="q5b"]').forEach(c => { c.checked = false; });
+  // 全分岐フィールドをクリア
+  [...yesFields, ...noFields].forEach(f => f.classList.add('hidden'));
+  form.querySelectorAll(
+    'input[name="q2a"], input[name="q2b"], input[name="q3"], input[name="q4"], input[name="q5"], ' +
+    'input[name="n_q3"], input[name="n_q4"]'
+  ).forEach(c => { c.checked = false; });
   form.querySelectorAll('input[name="q2a_other"], input[name="q2b_other"]').forEach(c => { c.value = ''; });
+  form.querySelectorAll('#q6, #n_q5').forEach(t => { t.value = ''; });
   document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
   document.querySelectorAll('.options label.checked').forEach(l => {
-    // Q1のハイライトだけ残す
     if (!l.closest('#q1Options')) l.classList.remove('checked');
   });
 
   if (val === VAL_YES) {
-    q2bField.classList.remove('hidden');
-    q3Field.classList.remove('hidden');
-    q5bField.classList.remove('hidden');
+    yesFields.forEach(f => f.classList.remove('hidden'));
   } else if (val === VAL_NO) {
-    q2aField.classList.remove('hidden');
-    q5aField.classList.remove('hidden');
+    noFields.forEach(f => f.classList.remove('hidden'));
   }
 }
 
@@ -414,15 +447,19 @@ q1ResetBtn.addEventListener('click', () => {
   q1Field.scrollIntoView({ behavior: 'smooth', block: 'center' });
 });
 
-// Q4の3つ制限
-q4Options.addEventListener('change', (e) => {
-  if (e.target.type !== 'checkbox') return;
-  const checked = q4Options.querySelectorAll('input[type="checkbox"]:checked');
-  if (checked.length > 3) {
-    e.target.checked = false;
-    alert('3つまでしか選択できません');
-  }
-});
+// 3つ制限（導入中Q4 / 未導入Q3 共通）
+function attachMaxThree(groupEl) {
+  groupEl.addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const checked = groupEl.querySelectorAll('input[type="checkbox"]:checked');
+    if (checked.length > 3) {
+      e.target.checked = false;
+      alert('3つまでしか選択できません');
+    }
+  });
+}
+attachMaxThree(q4Options);
+attachMaxThree(n_q3Options);
 
 // 「その他」自由記入欄
 document.querySelectorAll('input[data-other="1"]').forEach(cb => {
@@ -466,20 +503,23 @@ function validate() {
   showError('q1', !q1);
   if (!q1) hasError = true;
 
-  if (q1 && q1.value === VAL_NO) {
-    const q2a = form.querySelectorAll('input[name="q2a"]:checked');
-    showError('q2a', q2a.length === 0);
-    if (q2a.length === 0) hasError = true;
-  }
   if (q1 && q1.value === VAL_YES) {
     const q2b = form.querySelectorAll('input[name="q2b"]:checked');
     showError('q2b', q2b.length === 0);
     if (q2b.length === 0) hasError = true;
-  }
 
-  const q4 = form.querySelectorAll('input[name="q4"]:checked');
-  showError('q4', q4.length === 0);
-  if (q4.length === 0) hasError = true;
+    const q4 = form.querySelectorAll('input[name="q4"]:checked');
+    showError('q4', q4.length === 0);
+    if (q4.length === 0) hasError = true;
+  } else if (q1 && q1.value === VAL_NO) {
+    const q2a = form.querySelectorAll('input[name="q2a"]:checked');
+    showError('q2a', q2a.length === 0);
+    if (q2a.length === 0) hasError = true;
+
+    const nq3 = form.querySelectorAll('input[name="n_q3"]:checked');
+    showError('n_q3', nq3.length === 0);
+    if (nq3.length === 0) hasError = true;
+  }
 
   return !hasError;
 }
@@ -496,25 +536,31 @@ function getCheckedWithOther(name) {
 function collectValues() {
   const q1 = form.querySelector('input[name="q1"]:checked');
   const q1Val = q1 ? q1.value : '';
-  let q2 = [];
-  let q5 = [];
-  if (q1Val === VAL_NO) {
-    q2 = getCheckedWithOther('q2a');
-    q5 = getCheckedWithOther('q5a');
-  } else if (q1Val === VAL_YES) {
-    q2 = getCheckedWithOther('q2b');
-    q5 = getCheckedWithOther('q5b');
-  }
-
-  return {
+  const base = {
     clinicName: document.getElementById('clinicName').value.trim(),
-    q1: q1Val,
-    q2: q2.join(', '),
-    q3: getCheckedWithOther('q3').join(', '),
-    q4: getCheckedWithOther('q4').join(', '),
-    q5: q5.join(', '),
-    q6: document.getElementById('q6').value.trim()
+    q1: q1Val
   };
+
+  if (q1Val === VAL_YES) {
+    return {
+      ...base,
+      q2: getCheckedWithOther('q2b').join(', '),
+      q3: getCheckedWithOther('q3').join(', '),
+      q4: getCheckedWithOther('q4').join(', '),
+      q5: getCheckedWithOther('q5').join(', '),
+      q6: document.getElementById('q6').value.trim()
+    };
+  }
+  if (q1Val === VAL_NO) {
+    return {
+      ...base,
+      q2: getCheckedWithOther('q2a').join(', '),
+      q3: getCheckedWithOther('n_q3').join(', '),
+      q4: getCheckedWithOther('n_q4').join(', '),
+      q5: document.getElementById('n_q5').value.trim()
+    };
+  }
+  return base;
 }
 
 function sendInBackground(payload) {
@@ -561,6 +607,7 @@ form.addEventListener('change', (e) => {
   if (e.target.name === 'q2a') showError('q2a', false);
   if (e.target.name === 'q2b') showError('q2b', false);
   if (e.target.name === 'q4') showError('q4', false);
+  if (e.target.name === 'n_q3') showError('n_q3', false);
 });
 </script>
 
