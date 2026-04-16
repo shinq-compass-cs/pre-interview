@@ -236,14 +236,14 @@
         <div class="error" data-error-for="q2b">1つ以上選択してください</div>
       </div>
 
-      <!-- Q3 -->
-      <div class="field">
+      <!-- Q3（Q1=はい のときのみ表示） -->
+      <div class="field hidden" id="q3Field">
         <span class="label">Q3. 今の問診で困っていることはありますか？<span class="optional">任意・複数選択可</span></span>
         <div class="options">
           <label><input type="checkbox" name="q3" value="書き漏れ・情報不足が多い"> 書き漏れ・情報不足が多い</label>
-          <label><input type="checkbox" name="q3" value="当日の記入待ちで時間がかかる"> 当日の記入待ちで時間がかかる</label>
-          <label><input type="checkbox" name="q3" value="紙の管理・保管が大変"> 紙の管理・保管が大変</label>
-          <label><input type="checkbox" name="q3" value="スタッフへの共有がしにくい"> スタッフへの共有がしにくい</label>
+          <label><input type="checkbox" name="q3" value="回答率が低い／入力してくれない患者さんがいる"> 回答率が低い／入力してくれない患者さんがいる</label>
+          <label><input type="checkbox" name="q3" value="回答内容をカルテに転記するのが手間"> 回答内容をカルテに転記するのが手間</label>
+          <label><input type="checkbox" name="q3" value="高齢の患者さんが入力できない"> 高齢の患者さんが入力できない</label>
           <label><input type="checkbox" name="q3" value="特に困っていない"> 特に困っていない</label>
         </div>
       </div>
@@ -300,13 +300,15 @@ const q4Options = document.getElementById('q4Options');
 const errorSummary = document.getElementById('errorSummary');
 const submitBtn = document.getElementById('submitBtn');
 
-// Q1変更でQ2切り替え
+// Q1変更でQ2・Q3を切り替え
+const q3Field = document.getElementById('q3Field');
 document.querySelectorAll('input[name="q1"]').forEach(r => {
   r.addEventListener('change', () => {
     const val = r.value;
     q2aField.classList.add('hidden');
     q2bField.classList.add('hidden');
-    form.querySelectorAll('input[name="q2a"], input[name="q2b"]').forEach(c => { c.checked = false; });
+    q3Field.classList.add('hidden');
+    form.querySelectorAll('input[name="q2a"], input[name="q2b"], input[name="q3"]').forEach(c => { c.checked = false; });
     form.querySelectorAll('input[name="q2a_other"], input[name="q2b_other"]').forEach(c => { c.value = ''; });
     document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
     document.querySelectorAll('.options label.checked').forEach(l => l.classList.remove('checked'));
@@ -315,6 +317,7 @@ document.querySelectorAll('input[name="q1"]').forEach(r => {
       q2aField.classList.remove('hidden');
     } else if (val === 'はい（行っている）') {
       q2bField.classList.remove('hidden');
+      q3Field.classList.remove('hidden');
     }
   });
 });
