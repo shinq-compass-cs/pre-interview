@@ -326,7 +326,7 @@
 
         <!-- 導入中 Q4（使っていて気になること） -->
         <div class="field hidden" id="y_q4Field">
-          <span class="label">Q4. 使っていて、気になることはありますか？<span class="optional">任意・複数選択可</span></span>
+          <span class="label">Q4. 使っていて、気になることはありますか？<span class="required">必須・複数選択可</span></span>
           <div class="options">
             <label><input type="checkbox" name="y_q4" value="回答率が低い"> 回答率が低い</label>
             <label><input type="checkbox" name="y_q4" value="システム料金が高い"> システム料金が高い</label>
@@ -336,6 +336,7 @@
             <label><input type="checkbox" name="y_q4" value="サポート体制が不十分"> サポート体制が不十分</label>
             <label><input type="checkbox" name="y_q4" value="特にない"> 特にない</label>
           </div>
+          <div class="error" data-error-for="y_q4">1つ以上選択してください</div>
         </div>
 
         <!-- 導入中 Q5（自由記述） -->
@@ -495,6 +496,10 @@ function validate() {
     const yq3 = form.querySelectorAll('input[name="y_q3"]:checked');
     showError('y_q3', yq3.length === 0);
     if (yq3.length === 0) hasError = true;
+
+    const yq4 = form.querySelectorAll('input[name="y_q4"]:checked');
+    showError('y_q4', yq4.length === 0);
+    if (yq4.length === 0) hasError = true;
   } else if (q1 && q1.value === VAL_NO) {
     const q2a = form.querySelectorAll('input[name="q2a"]:checked');
     showError('q2a', q2a.length === 0);
@@ -589,6 +594,7 @@ form.addEventListener('change', (e) => {
   if (e.target.name === 'q2a') showError('q2a', false);
   if (e.target.name === 'q2b') showError('q2b', false);
   if (e.target.name === 'y_q3') showError('y_q3', false);
+  if (e.target.name === 'y_q4') showError('y_q4', false);
   if (e.target.name === 'n_q3') showError('n_q3', false);
 });
 </script>
