@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>事前問診機能ヒアリング</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", sans-serif;
+    background: #f5f7fa;
+    color: #333;
+    margin: 0;
+    padding: 16px;
+    line-height: 1.7;
+  }
+  .container {
+    max-width: 640px;
+    margin: 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    padding: 24px 20px;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0 0 8px;
+    color: #2c5aa0;
+  }
+  .lead {
+    font-size: 14px;
+    color: #666;
+    margin: 0 0 24px;
+  }
+  .field {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+  .field:last-of-type {
+    border-bottom: none;
+  }
+  .label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 8px;
+    font-size: 15px;
+  }
+  .required {
+    color: #888;
+    font-size: 12px;
+    margin-left: 6px;
+    transition: color 0.15s;
+  }
+  .field.has-error .required {
+    color: #e53e3e;
+  }
+  .optional {
+    color: #888;
+    font-size: 12px;
+    margin-left: 6px;
+    font-weight: normal;
+  }
+  input[type="text"],
+  textarea {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-family: inherit;
+  }
+  textarea {
+    min-height: 100px;
+    resize: vertical;
+  }
+  input[type="text"]:focus,
+  textarea:focus {
+    outline: none;
+    border-color: #2c5aa0;
+  }
+  .options label {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    background: #f9fafb;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.15s;
+  }
+  .options label:hover {
+    background: #eff3f8;
+  }
+  .options input[type="radio"],
+  .options input[type="checkbox"] {
+    margin-right: 10px;
+    margin-top: 4px;
+    flex-shrink: 0;
+    transform: scale(1.2);
+  }
+  .options label.checked {
+    background: #e7efff;
+    border-color: #2c5aa0;
+  }
+  .other-input {
+    display: none;
+    margin: -2px 0 10px 32px;
+  }
+  .other-input.show {
+    display: block;
+  }
+  .other-input input {
+    font-size: 14px;
+    padding: 8px 10px;
+  }
+  .error {
+    color: #e53e3e;
+    font-size: 13px;
+    margin-top: 6px;
+    display: none;
+  }
+  .error.show {
+    display: block;
+  }
+  button {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+    background: #2c5aa0;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 8px;
+  }
+  button:hover {
+    background: #1e4180;
+  }
+  button:disabled {
+    background: #999;
+    cursor: not-allowed;
+  }
+  .hidden {
+    display: none;
+  }
+  .complete {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .complete h2 {
+    color: #2c5aa0;
+    font-size: 22px;
+    margin-bottom: 12px;
+  }
+  .complete p {
+    color: #666;
+    font-size: 14px;
+  }
+  .form-error-summary {
+    display: none;
+    background: #fee;
+    color: #c53030;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+  .form-error-summary.show {
+    display: block;
+  }
+  .q1-banner {
+    background: #e7efff;
+    border: 1px solid #b8ccee;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 14px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .q1-banner-label {
+    color: #555;
+    font-size: 13px;
+  }
+  .q1-banner-value {
+    font-weight: 600;
+    color: #2c5aa0;
+  }
+  .link-btn {
+    background: none;
+    border: none;
+    color: #2c5aa0;
+    text-decoration: underline;
+    padding: 0;
+    width: auto;
+    margin: 0;
+    font-size: 13px;
+    cursor: pointer;
+    font-weight: normal;
+  }
+  .link-btn:hover {
+    background: none;
+    color: #1e4180;
+  }
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .container { padding: 20px 16px; }
+    h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div id="formWrap">
+    <h1>事前問診機能に関するヒアリング</h1>
+    <p class="lead">ご協力ありがとうございます。回答所要時間は約3分です。</p>
+
+    <div class="form-error-summary" id="errorSummary">
+      未回答の項目があります。ご確認ください。
+    </div>
+
+    <form id="hearingForm" novalidate>
+
+      <!-- 院名 -->
+      <div class="field">
+        <label class="label" for="clinicName">院名<span class="required">必須</span></label>
+        <input type="text" id="clinicName" name="clinicName" autocomplete="organization">
+        <div class="error" data-error-for="clinicName">院名を入力してください</div>
+      </div>
+
+      <!-- Q1 -->
+      <div class="field" id="q1Field">
+        <span class="label">Q1. 来院前に患者さんへ事前問診を行っていますか？<span class="required">必須</span></span>
+        <div class="options" id="q1Options">
+          <label><input type="radio" name="q1" value="はい（行っている）"> はい（行っている）</label>
+          <label><input type="radio" name="q1" value="いいえ（行っていない）"> いいえ（行っていない）</label>
+        </div>
+        <div class="error" data-error-for="q1">選択してください</div>
+      </div>
+
+      <!-- Q1回答後に表示される本体 -->
+      <div id="restOfForm" class="hidden">
+
+        <!-- Q1選び直しバナー -->
+        <div class="q1-banner">
+          <div>
+            <span class="q1-banner-label">Q1の回答：</span>
+            <span class="q1-banner-value" id="q1Display"></span>
+          </div>
+          <button type="button" id="q1ResetBtn" class="link-btn">選び直す</button>
+        </div>
+
+        <!-- Q2-B（はい用：方法） -->
+        <div class="field hidden" id="q2bField">
+          <span class="label">Q2. どんな方法で行っていますか？<span class="required">必須・複数選択可</span></span>
+          <div class="options" data-other-group="q2b">
+            <label><input type="checkbox" name="q2b" value="予約システム内の問診機能"> 予約システム内の問診機能</label>
+            <label><input type="checkbox" name="q2b" value="LINEやメールで別途送信"> LINEやメールで別途送信</label>
+            <label><input type="checkbox" name="q2b" value="紙の問診票（事前に郵送）"> 紙の問診票（事前に郵送）</label>
+            <label><input type="checkbox" name="q2b" value="その他" data-other="1"> その他</label>
+            <div class="other-input" data-other-input="q2b">
+              <input type="text" name="q2b_other" placeholder="自由記入">
+            </div>
+          </div>
+          <div class="error" data-error-for="q2b">1つ以上選択してください</div>
+        </div>
+
+        <!-- Q2-A（いいえ用：理由） -->
+        <div class="field hidden" id="q2aField">
+          <span class="label">Q2. 行っていない理由を教えてください<span class="required">必須・複数選択可</span></span>
+          <div class="options" data-other-group="q2a">
+            <label><input type="checkbox" name="q2a" value="費用が掛かる"> 費用が掛かる</label>
+            <label><input type="checkbox" name="q2a" value="設定・運用の手間が大変"> 設定・運用の手間が大変</label>
+            <label><input type="checkbox" name="q2a" value="患者さんが回答してくれない"> 患者さんが回答してくれない</label>
+            <label><input type="checkbox" name="q2a" value="来院時に問診しているため、事前に行う必要がない"> 来院時に問診しているため、事前に行う必要がない</label>
+            <label><input type="checkbox" name="q2a" value="その他" data-other="1"> その他</label>
+            <div class="other-input" data-other-input="q2a">
+              <input type="text" name="q2a_other" placeholder="自由記入">
+            </div>
+          </div>
+          <div class="error" data-error-for="q2a">1つ以上選択してください</div>
+        </div>
+
+        <!-- 未導入 Q3（期待メリット：必須・最大3つ） -->
+        <div class="field hidden" id="n_q3Field">
+          <span class="label">Q3. もし導入した場合、事前問診にどんなメリットを期待しますか？<span class="required">必須・最大3つ</span></span>
+          <div class="options" id="n_q3Options">
+            <label><input type="checkbox" name="n_q3" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
+            <label><input type="checkbox" name="n_q3" value="事前に心構え・準備ができる"> 事前に心構え・準備ができる</label>
+            <label><input type="checkbox" name="n_q3" value="問診の時間（患者さんの記入時間）を削減できる"> 問診の時間（患者さんの記入時間）を削減できる</label>
+            <label><input type="checkbox" name="n_q3" value="紙の問診・カルテが不要になり効率化"> 紙の問診・カルテが不要になり効率化</label>
+            <label><input type="checkbox" name="n_q3" value="患者さんへ安心感・信頼感の提供"> 患者さんへ安心感・信頼感の提供</label>
+            <label><input type="checkbox" name="n_q3" value="問診の精度が上がる"> 問診の精度が上がる</label>
+          </div>
+          <div class="error" data-error-for="n_q3">1つ以上選択してください</div>
+        </div>
+
+        <!-- 未導入 Q4（自由記述） -->
+        <div class="field hidden" id="n_q4Field">
+          <label class="label" for="n_q4">Q4. 当社の事前問診機能について、期待することを自由にお聞かせください。<span class="optional">任意</span></label>
+          <textarea id="n_q4" name="n_q4" placeholder="ご自由にご記入ください"></textarea>
+        </div>
+
+        <!-- 導入中 Q3（メリット：必須・最大3つ） -->
+        <div class="field hidden" id="y_q3Field">
+          <span class="label">Q3. 事前問診の導入メリットを教えてください<span class="required">必須・最大3つ</span></span>
+          <div class="options" id="y_q3Options">
+            <label><input type="checkbox" name="y_q3" value="来院前に患者さんの主訴・情報がわかる"> 来院前に患者さんの主訴・情報がわかる</label>
+            <label><input type="checkbox" name="y_q3" value="事前に心構え・準備ができる"> 事前に心構え・準備ができる</label>
+            <label><input type="checkbox" name="y_q3" value="問診の時間(患者さんの記入時間)を削減できる"> 問診の時間（患者さんの記入時間）を削減できる</label>
+            <label><input type="checkbox" name="y_q3" value="紙の問診・カルテが不要になり効率化"> 紙の問診・カルテが不要になり効率化</label>
+            <label><input type="checkbox" name="y_q3" value="患者さんへ安心感・信頼感の提供"> 患者さんへ安心感・信頼感の提供</label>
+            <label><input type="checkbox" name="y_q3" value="問診の精度が上がる"> 問診の精度が上がる</label>
+          </div>
+          <div class="error" data-error-for="y_q3">1つ以上選択してください</div>
+        </div>
+
+        <!-- 導入中 Q4（使っていて気になること） -->
+        <div class="field hidden" id="y_q4Field">
+          <span class="label">Q4. 使っていて、気になることはありますか？<span class="required">必須・複数選択可</span></span>
+          <div class="options">
+            <label><input type="checkbox" name="y_q4" value="回答率が低い"> 回答率が低い</label>
+            <label><input type="checkbox" name="y_q4" value="システム料金が高い"> システム料金が高い</label>
+            <label><input type="checkbox" name="y_q4" value="設問のカスタマイズ性が低い"> 設問のカスタマイズ性が低い</label>
+            <label><input type="checkbox" name="y_q4" value="他システム（カルテ・予約）と連携できない"> 他システム（カルテ・予約）と連携できない</label>
+            <label><input type="checkbox" name="y_q4" value="スマホ入力できない"> スマホ入力できない</label>
+            <label><input type="checkbox" name="y_q4" value="サポート体制が不十分"> サポート体制が不十分</label>
+            <label><input type="checkbox" name="y_q4" value="特にない"> 特にない</label>
+          </div>
+          <div class="error" data-error-for="y_q4">1つ以上選択してください</div>
+        </div>
+
+        <!-- 導入中 Q5（自由記述） -->
+        <div class="field hidden" id="y_q5Field">
+          <label class="label" for="y_q5">Q5. 当社の事前問診機能について、期待することを自由にお聞かせください。<span class="optional">任意</span></label>
+          <textarea id="y_q5" name="y_q5" placeholder="ご自由にご記入ください"></textarea>
+        </div>
+
+        <button type="submit" id="submitBtn">送信する</button>
+      </div>
+    </form>
+  </div>
+
+  <div id="completeWrap" class="complete hidden">
+    <h2>ご回答ありがとうございました</h2>
+    <p>いただいたご意見は、サービス改善に活用させていただきます。</p>
+  </div>
+</div>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbwDGhGPDrLG58np_nDb0hpzaGtVbPcQbzKty-LJ-6BpCrXwmJqWRBLlANuB4cDu9ULeVw/exec";
+const VAL_YES = 'はい（行っている）';
+const VAL_NO = 'いいえ（行っていない）';
+
+const form = document.getElementById('hearingForm');
+const q1Field = document.getElementById('q1Field');
+const restOfForm = document.getElementById('restOfForm');
+const q1Display = document.getElementById('q1Display');
+const q1ResetBtn = document.getElementById('q1ResetBtn');
+
+// 導入中用フィールド
+const q2bField = document.getElementById('q2bField');
+const y_q3Field = document.getElementById('y_q3Field');
+const y_q4Field = document.getElementById('y_q4Field');
+const y_q5Field = document.getElementById('y_q5Field');
+const y_q3Options = document.getElementById('y_q3Options');
+
+// 未導入用フィールド
+const q2aField = document.getElementById('q2aField');
+const n_q3Field = document.getElementById('n_q3Field');
+const n_q4Field = document.getElementById('n_q4Field');
+const n_q3Options = document.getElementById('n_q3Options');
+
+const yesFields = [q2bField, y_q3Field, y_q4Field, y_q5Field];
+const noFields = [q2aField, n_q3Field, n_q4Field];
+
+const errorSummary = document.getElementById('errorSummary');
+
+function applyQ1(val) {
+  // 全分岐フィールドをクリア
+  [...yesFields, ...noFields].forEach(f => f.classList.add('hidden'));
+  form.querySelectorAll(
+    'input[name="q2a"], input[name="q2b"], ' +
+    'input[name="y_q3"], input[name="y_q4"], ' +
+    'input[name="n_q3"]'
+  ).forEach(c => { c.checked = false; });
+  form.querySelectorAll('input[name="q2a_other"], input[name="q2b_other"]').forEach(c => { c.value = ''; });
+  form.querySelectorAll('#y_q5, #n_q4').forEach(t => { t.value = ''; });
+  document.querySelectorAll('.other-input').forEach(o => o.classList.remove('show'));
+  document.querySelectorAll('.options label.checked').forEach(l => {
+    if (!l.closest('#q1Options')) l.classList.remove('checked');
+  });
+
+  if (val === VAL_YES) {
+    yesFields.forEach(f => f.classList.remove('hidden'));
+  } else if (val === VAL_NO) {
+    noFields.forEach(f => f.classList.remove('hidden'));
+  }
+}
+
+// Q1変更 → Q1畳み＋本体表示
+document.querySelectorAll('input[name="q1"]').forEach(r => {
+  r.addEventListener('change', () => {
+    const val = r.value;
+    applyQ1(val);
+    q1Display.textContent = val;
+    q1Field.classList.add('hidden');
+    restOfForm.classList.remove('hidden');
+  });
+});
+
+// Q1選び直し
+q1ResetBtn.addEventListener('click', () => {
+  form.querySelectorAll('input[name="q1"]').forEach(r => { r.checked = false; });
+  document.querySelectorAll('#q1Options label.checked').forEach(l => l.classList.remove('checked'));
+  applyQ1('');
+  restOfForm.classList.add('hidden');
+  q1Field.classList.remove('hidden');
+  q1Field.scrollIntoView({ behavior: 'smooth', block: 'center' });
+});
+
+// 3つ制限（導入中Q4 / 未導入Q3 共通）
+function attachMaxThree(groupEl) {
+  groupEl.addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const checked = groupEl.querySelectorAll('input[type="checkbox"]:checked');
+    if (checked.length > 3) {
+      e.target.checked = false;
+      alert('3つまでしか選択できません');
+    }
+  });
+}
+attachMaxThree(y_q3Options);
+attachMaxThree(n_q3Options);
+
+// 「その他」自由記入欄
+document.querySelectorAll('input[data-other="1"]').forEach(cb => {
+  cb.addEventListener('change', () => {
+    const group = cb.closest('.options').dataset.otherGroup;
+    const input = document.querySelector(`[data-other-input="${group}"]`);
+    if (cb.checked) {
+      input.classList.add('show');
+      input.querySelector('input').focus();
+    } else {
+      input.classList.remove('show');
+      input.querySelector('input').value = '';
+    }
+  });
+});
+
+// チェック/ラジオのハイライト
+document.querySelectorAll('.options').forEach(group => {
+  group.addEventListener('change', () => {
+    group.querySelectorAll('label').forEach(lbl => {
+      const input = lbl.querySelector('input[type="checkbox"], input[type="radio"]');
+      if (input && input.checked) lbl.classList.add('checked');
+      else lbl.classList.remove('checked');
+    });
+  });
+});
+
+function showError(key, show) {
+  const el = document.querySelector(`[data-error-for="${key}"]`);
+  if (el) {
+    el.classList.toggle('show', show);
+    const field = el.closest('.field');
+    if (field) field.classList.toggle('has-error', show);
+  }
+}
+
+function validate() {
+  let hasError = false;
+
+  const clinicName = document.getElementById('clinicName').value.trim();
+  showError('clinicName', !clinicName);
+  if (!clinicName) hasError = true;
+
+  const q1 = form.querySelector('input[name="q1"]:checked');
+  showError('q1', !q1);
+  if (!q1) hasError = true;
+
+  if (q1 && q1.value === VAL_YES) {
+    const q2b = form.querySelectorAll('input[name="q2b"]:checked');
+    showError('q2b', q2b.length === 0);
+    if (q2b.length === 0) hasError = true;
+
+    const yq3 = form.querySelectorAll('input[name="y_q3"]:checked');
+    showError('y_q3', yq3.length === 0);
+    if (yq3.length === 0) hasError = true;
+
+    const yq4 = form.querySelectorAll('input[name="y_q4"]:checked');
+    showError('y_q4', yq4.length === 0);
+    if (yq4.length === 0) hasError = true;
+  } else if (q1 && q1.value === VAL_NO) {
+    const q2a = form.querySelectorAll('input[name="q2a"]:checked');
+    showError('q2a', q2a.length === 0);
+    if (q2a.length === 0) hasError = true;
+
+    const nq3 = form.querySelectorAll('input[name="n_q3"]:checked');
+    showError('n_q3', nq3.length === 0);
+    if (nq3.length === 0) hasError = true;
+  }
+
+  return !hasError;
+}
+
+function getCheckedWithOther(name) {
+  const otherEl = form.querySelector(`input[name="${name}_other"]`);
+  const otherText = otherEl ? otherEl.value.trim() : '';
+  return Array.from(form.querySelectorAll(`input[name="${name}"]:checked`)).map(el => {
+    if (el.value === 'その他' && otherText) return `その他: ${otherText}`;
+    return el.value;
+  });
+}
+
+function collectValues() {
+  const q1 = form.querySelector('input[name="q1"]:checked');
+  const q1Val = q1 ? q1.value : '';
+  const base = {
+    clinicName: document.getElementById('clinicName').value.trim(),
+    q1: q1Val
+  };
+
+  if (q1Val === VAL_YES) {
+    return {
+      ...base,
+      q2: getCheckedWithOther('q2b').join(', '),
+      q3: getCheckedWithOther('y_q3').join(', '),
+      q4: getCheckedWithOther('y_q4').join(', '),
+      q5: document.getElementById('y_q5').value.trim()
+    };
+  }
+  if (q1Val === VAL_NO) {
+    return {
+      ...base,
+      q2: getCheckedWithOther('q2a').join(', '),
+      q3: getCheckedWithOther('n_q3').join(', '),
+      q4: document.getElementById('n_q4').value.trim()
+    };
+  }
+  return base;
+}
+
+function sendInBackground(payload) {
+  const body = JSON.stringify(payload);
+  if (navigator.sendBeacon) {
+    const blob = new Blob([body], { type: 'text/plain;charset=utf-8' });
+    if (navigator.sendBeacon(GAS_URL, blob)) return;
+  }
+  fetch(GAS_URL, {
+    method: 'POST',
+    mode: 'no-cors',
+    keepalive: true,
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: body
+  }).catch(() => {});
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  errorSummary.classList.remove('show');
+
+  if (!validate()) {
+    errorSummary.classList.add('show');
+    const firstErr = document.querySelector('.error.show');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  sendInBackground(collectValues());
+
+  document.getElementById('formWrap').classList.add('hidden');
+  document.getElementById('completeWrap').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// 入力時にエラー解除
+['clinicName'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    if (document.getElementById(id).value.trim()) showError(id, false);
+  });
+});
+form.addEventListener('change', (e) => {
+  if (e.target.name === 'q1') showError('q1', false);
+  if (e.target.name === 'q2a') showError('q2a', false);
+  if (e.target.name === 'q2b') showError('q2b', false);
+  if (e.target.name === 'y_q3') showError('y_q3', false);
+  if (e.target.name === 'y_q4') showError('y_q4', false);
+  if (e.target.name === 'n_q3') showError('n_q3', false);
+});
+</script>
+
+</body>
+</html>

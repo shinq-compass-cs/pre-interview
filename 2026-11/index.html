@@ -1,0 +1,2137 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow">
+<title>事前問診アンケート</title>
+<style>
+  :root {
+    --bg: #eef2f7;
+    --surface: #ffffff;
+    --ink: #0f172a;
+    --ink-soft: #334155;
+    --muted: #64748b;
+    --line: #cbd5e1;
+    --line-soft: #e2e8f0;
+    --accent: #1d4ed8;
+    --accent-hover: #2563eb;
+    --accent-dark: #1e3a8a;
+    --accent-ink: #ffffff;
+    --accent-soft: #dbeafe;
+    --accent-softer: #eff6ff;
+    --focus: #3b82f6;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,0.06);
+    --shadow-md: 0 4px 16px rgba(15,23,42,0.08);
+    --shadow-lg: 0 10px 28px rgba(15,23,42,0.12);
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    background:
+      radial-gradient(1200px 500px at 50% -200px, rgba(59,130,246,0.14), transparent 60%),
+      linear-gradient(180deg, #eef2f7 0%, #e5ecf4 100%);
+    color: var(--ink);
+    min-height: 100%;
+  }
+  body {
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans", "Yu Gothic", "Noto Sans JP", "Meiryo", sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: 100%;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 560px; margin: 0 auto; padding: 14px 16px 28px; }
+  .site-head { max-width: 560px; margin: 0 auto; padding: 16px 20px 0; font-size: 15px; font-weight: 700; color: var(--accent-dark); letter-spacing: 0.04em; }
+  .site-foot { max-width: 560px; margin: 0 auto; padding: 0 16px 32px; text-align: center; font-size: 11.5px; color: var(--muted); }
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    padding: 22px 20px 26px;
+    border: 1px solid var(--line-soft);
+  }
+  h1 {
+    font-size: 20px;
+    color: var(--accent-dark);
+    margin: 0 0 14px;
+    letter-spacing: 0.01em;
+    font-weight: 700;
+  }
+  h2 {
+    font-size: 18px;
+    margin: 0 0 20px;
+    line-height: 1.6;
+    color: var(--ink);
+    font-weight: 700;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line-soft);
+    position: relative;
+  }
+  h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    width: 48px;
+    height: 3px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  p { margin: 0 0 12px; color: var(--ink-soft); }
+  .lead { font-size: 14px; color: var(--muted); margin: 0 0 16px; }
+  .progress {
+    margin: -6px -4px 18px;
+  }
+  .progress-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.02em;
+  }
+  .progress-meta .step-num { color: var(--accent-dark); font-weight: 700; font-size: 13px; }
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: var(--line-soft);
+    border-radius: 999px;
+    overflow: hidden;
+    box-shadow: inset 0 1px 2px rgba(15,23,42,0.06);
+  }
+  .progress-fill {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-hover), var(--accent));
+    border-radius: 999px;
+    transition: width 260ms ease;
+  }
+  .subheading {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    background: var(--accent-softer);
+    border: 1px solid var(--accent-soft);
+    padding: 4px 12px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+    letter-spacing: 0.01em;
+  }
+  .choice {
+    display: block;
+    width: 100%;
+    padding: 15px 18px 15px 48px;
+    margin: 10px 0;
+    background: var(--surface);
+    color: var(--ink);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    font: inherit;
+    font-weight: 600;
+    font-size: 15.5px;
+    text-align: left;
+    cursor: pointer;
+    min-height: 54px;
+    line-height: 1.5;
+    position: relative;
+    box-shadow: var(--shadow-sm);
+    transition:
+      background-color 140ms ease,
+      border-color 140ms ease,
+      color 140ms ease,
+      box-shadow 140ms ease,
+      transform 80ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .choice::before {
+    content: "";
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--line);
+    border-radius: 50%;
+    background: var(--surface);
+    box-sizing: border-box;
+    transition: border-color 140ms ease, background 140ms ease, box-shadow 140ms ease;
+  }
+  @media (hover: hover) {
+    .choice:hover {
+      background: var(--accent-softer);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-md);
+    }
+    .choice:hover::before { border-color: var(--accent); }
+  }
+  .choice.touched,
+  .choice:active {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    transform: scale(0.985);
+    box-shadow: var(--shadow-sm);
+  }
+  .choice.touched::before,
+  .choice:active::before { border-color: var(--accent); }
+  .choice.selected {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    box-shadow: 0 6px 18px rgba(29,78,216,0.28);
+  }
+  .choice.selected::before {
+    background: var(--accent-ink);
+    border-color: var(--accent-ink);
+    box-shadow: inset 0 0 0 5px var(--accent);
+  }
+  .choice:focus { outline: none; }
+  .choice:focus-visible { box-shadow: 0 0 0 4px rgba(59,130,246,0.35); }
+  .compact-choices .choice {
+    padding: 11px 16px 11px 40px;
+    margin: 7px 0;
+    min-height: 46px;
+    font-size: 14.5px;
+  }
+  .compact-choices .choice::before {
+    left: 14px;
+    width: 16px;
+    height: 16px;
+  }
+  .acc-group { margin: 10px 0; border: 2px solid var(--line); border-radius: 12px; background: var(--surface); overflow: hidden; }
+  .acc-group.open { border-color: var(--accent); }
+  .acc-head {
+    display: block; width: 100%;
+    padding: 14px 18px;
+    background: var(--surface);
+    border: none;
+    text-align: left;
+    font: inherit;
+    font-weight: 700;
+    font-size: 15.5px;
+    color: var(--ink);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .acc-head { position: relative; padding-right: 48px; }
+  /* 開けることを示す印（閉：下向き、開：上向き） */
+  .acc-head::after {
+    content: "";
+    position: absolute;
+    right: 20px;
+    top: 22px;
+    width: 10px;
+    height: 10px;
+    border-right: 3px solid var(--accent);
+    border-bottom: 3px solid var(--accent);
+    transform: rotate(45deg);
+    transition: transform 160ms ease;
+  }
+  .acc-group.open .acc-head::after { transform: rotate(-135deg); top: 27px; }
+  .acc-group.open .acc-head { background: var(--accent-softer); color: var(--accent-dark); }
+  .err-box {
+    font-size: 14.5px;
+    font-weight: 700;
+    background: #fdecec;
+    border: 1px solid #f3b9b9;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin: 4px 0 8px;
+  }
+  .need-answer .choice { border-color: #d98a8a; }
+  .acc-summary { display: block; font-size: 12.5px; font-weight: 500; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+  .acc-body { padding: 4px 14px 14px; }
+  .acc-body .choice { margin: 8px 0; }
+  .group-head {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    margin: 20px 0 8px;
+    padding: 6px 12px;
+    background: var(--accent-softer);
+    border-left: 4px solid var(--accent);
+    border-radius: 4px;
+    letter-spacing: 0.02em;
+  }
+  .group-head:first-of-type { margin-top: 4px; }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 24px;
+    gap: 12px;
+  }
+  .btn {
+    padding: 12px 22px;
+    border-radius: 10px;
+    border: 2px solid var(--accent);
+    background: var(--surface);
+    color: var(--accent);
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+    min-height: 50px;
+    flex: 0 0 auto;
+    transition: background-color 140ms ease, border-color 140ms ease, transform 80ms ease, box-shadow 140ms ease;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+  .btn:hover { background: var(--accent-softer); }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+    color: var(--accent-ink);
+    border-color: var(--accent);
+    box-shadow: 0 4px 14px rgba(29,78,216,0.32);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(29,78,216,0.38);
+    color: var(--accent-ink);
+    background: linear-gradient(180deg, var(--accent-hover) 0%, var(--accent) 100%);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: default;
+    box-shadow: none;
+  }
+  .btn-link {
+    background: transparent;
+    border: none;
+    color: var(--accent);
+    text-decoration: underline;
+    padding: 8px 4px;
+  }
+  textarea, input[type="text"], input[type="tel"] {
+    width: 100%;
+    padding: 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font: inherit;
+    background: var(--surface);
+    color: var(--ink);
+    min-height: 48px;
+    transition: border-color 140ms ease, box-shadow 140ms ease;
+  }
+  textarea { min-height: 108px; resize: vertical; }
+  textarea:focus, input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(59,130,246,0.2);
+  }
+  .other-text {
+    margin-top: 12px;
+    padding: 14px 14px 12px;
+    background: var(--accent-softer);
+    border-radius: 10px;
+    border: 1px solid var(--accent-soft);
+  }
+  .note { font-size: 13px; color: var(--muted); margin-top: 10px; }
+  .sub-label {
+    font-size: 14.5px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    margin: 4px 0 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .opt-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--accent-dark);
+    background: var(--accent-soft);
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .req-badge {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #b45309;
+    background: #fef3c7;
+    padding: 3px 8px;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+  }
+  .closed, .thanks {
+    padding: 24px 18px;
+    text-align: left;
+  }
+  .thanks h1 { color: var(--accent); margin-bottom: 14px; }
+  .err { color: #b23b3b; font-size: 13px; margin-top: 8px; }
+  .cs-block { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--line); }
+  .cs-block:last-child { border-bottom: none; }
+  .cs-block label.lbl { display: block; font-weight: 600; margin-bottom: 6px; font-size: 14px; }
+  @media (max-width: 400px) {
+    h1 { font-size: 17px; }
+    h2 { font-size: 16px; }
+    .wrap { padding: 12px 12px 36px; }
+    .card { padding: 16px 14px 20px; }
+  }
+</style>
+</head>
+<body>
+<header class="site-head">しんきゅうコンパス</header>
+<div class="wrap" id="app"></div>
+<footer class="site-foot">Copyright (C) shinq-compass.jp All Rights Reserved.</footer>
+
+<script>
+(function() {
+  var active = null;
+  function mark(e) {
+    var el = e.target.closest(".choice");
+    if (!el) return;
+    if (active && active !== el) active.classList.remove("touched");
+    el.classList.add("touched");
+    active = el;
+  }
+  function clear() {
+    if (active) active.classList.remove("touched");
+    active = null;
+  }
+  document.addEventListener("touchstart", mark, { passive: true });
+  document.addEventListener("touchend", clear, { passive: true });
+  document.addEventListener("touchcancel", clear, { passive: true });
+  document.addEventListener("mousedown", mark);
+  document.addEventListener("mouseup", clear);
+  document.addEventListener("mouseleave", clear);
+})();
+</script>
+
+<script>
+/* ===========================================================================
+   事前問診アンケート v6（2026-11-20 配信）
+   仕様：docs/spec_v6_2026-11.md ／ docs/spec_cs_2026-11.md
+   =========================================================================== */
+
+var GAS_ENDPOINT = "https://script.google.com/macros/s/AKfycbxlnhrCQwiL5pE4Va5tf6AC8UzwhD1GcmIpWhNZFiZZ6p_k3Znbz8CDNXShVJpnZPSkdA/exec";
+var DEADLINE_JST = new Date("2026-12-04T23:59:59+09:00");
+var SALON_ID_RE = /^\d{1,8}$/;
+var FORM_VERSION = "v6";
+
+function qp(name) {
+  var m = location.search.match(new RegExp("[?&]" + name + "=([^&]*)"));
+  if (!m) return "";
+  try { return decodeURIComponent(m[1].replace(/\+/g, " ")); } catch (e) { return m[1]; }
+}
+var PARAM_ID = qp("id");
+var PARAM_SRC = (qp("src") || "mail").toLowerCase();
+if (PARAM_SRC !== "cs" && PARAM_SRC !== "mail") PARAM_SRC = "mail";
+
+// 院ごとに保存先を分ける（同じタブで別の院のリンクを開いても、前の院の行に上書きしない）
+var STORAGE_KEY = "pi2026-11_v6_" + (PARAM_SRC || "mail") + "_" + (SALON_ID_RE.test(PARAM_ID) ? PARAM_ID : "noid");
+function rand22() {
+  try {
+    if (window.crypto && window.crypto.getRandomValues) {
+      var bytes = new Uint8Array(16);
+      window.crypto.getRandomValues(bytes);
+      var out = "";
+      var chars = "0123456789abcdefghijklmnopqrstuvwxyz";
+      for (var i = 0; i < 22; i++) out += chars.charAt(bytes[i % 16] % chars.length);
+      return out;
+    }
+  } catch (e) {}
+  var chars2 = "0123456789abcdefghijklmnopqrstuvwxyz";
+  var s = "";
+  for (var i = 0; i < 22; i++) s += chars2.charAt(Math.floor(Math.random() * chars2.length));
+  return s;
+}
+function clearStoredState() {
+  try { sessionStorage.removeItem(STORAGE_KEY); } catch (e) {}
+}
+function loadState() {
+  try {
+    var s = sessionStorage.getItem(STORAGE_KEY);
+    if (s) return JSON.parse(s);
+  } catch (e) {}
+  return null;
+}
+function saveState() {
+  try { sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+}
+var loaded = loadState();
+var state = loaded || {
+  temp_id: "t_" + Date.now().toString(36) + "_" + rand22(),
+  src: PARAM_SRC,
+  salon_id: PARAM_ID || "",
+  salon_name: "",
+  cs_route: "",
+  cs_name: "",
+  answers: {},
+  history: [],
+  current: null,
+  shuffleSeed: null,
+  done: false
+};
+if (!state.shuffleSeed) state.shuffleSeed = Math.floor(Math.random() * 1e9);
+
+function seededShuffle(arr, salt) {
+  var seed = (state.shuffleSeed ^ hashStr(salt || "")) >>> 0;
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    seed = (seed * 9301 + 49297) % 233280;
+    var j = Math.floor((seed / 233280) * (i + 1));
+    var t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+function hashStr(s) {
+  var h = 2166136261;
+  for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 16777619) >>> 0; }
+  return h;
+}
+
+function postScreen(question, value, extra) {
+  if (!GAS_ENDPOINT || GAS_ENDPOINT.indexOf("__") === 0) return;
+  var nowMs = Date.now();
+  var payload = {
+    temp_id: state.temp_id,
+    src: state.src,
+    form_version: FORM_VERSION,
+    salon_id_raw: state.salon_id || "",
+    salon_name: state.salon_name || "",
+    cs_route: state.cs_route || "",
+    cs_name: state.cs_name || "",
+    question: question,
+    value: value == null ? "" : value,
+    ts: new Date(nowMs).toISOString(),
+    ts_ms: nowMs,
+    done: extra && extra.done ? 1 : 0,
+    // 院向けは、いまの Q1 の答えから状態を出す（Q1 を変えた直後の送信に古い状態が乗らないように）
+    state_no: state.src === "cs" ? (state.answers._state_no || "") : (Q1_TO_STATE[state.answers.q1] || ""),
+    full_answers: extra && extra.values ? extra.values : (extra && extra.full ? state.answers : null)
+  };
+  var body = JSON.stringify(payload);
+  var isFinal = extra && extra.done;
+  if (isFinal && navigator && navigator.sendBeacon) {
+    try {
+      var blob = new Blob([body], { type: "text/plain;charset=utf-8" });
+      var ok = navigator.sendBeacon(GAS_ENDPOINT, blob);
+      if (ok) return;
+    } catch (e) {}
+  }
+  try {
+    fetch(GAS_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: body,
+      keepalive: true
+    }).catch(function(){});
+  } catch (e) {}
+}
+
+/* ===========================================================================
+   設問定義
+   =========================================================================== */
+var FIXED_ORDER_QS = { q1:1, q5:1, q11:1, q14:1, q18:1, q19:1, q12_rare:1, q10_notell:1 };
+
+var Q1_TO_STATE = {
+  "使っている": "5",
+  "使っていたが、止めた": "4",
+  "知っているが、使っていない": "3",
+  "よく知らなかった": "2"
+};
+
+var Q11_TO_Q12 = {
+  "ほとんど届かない": "q12_rare",
+  "届いているか分からない": "q12_unsure",
+  "届くが、あまり見ていない": "q12_notseeing",
+  "見るが、あまり活かせていない": "q12_notusing",
+  "見て、活かしている": "q12_using"
+};
+
+var Q9_TO_Q10 = {
+  "患者さんにとって負担": "q10_burden",
+  "患者さんからの苦情": "q10_burden",
+  "回答が来ない": "q10_notell",
+  "見る時間がない": "q10_notime",
+  "結局、聞き直す": "q10_reask"
+};
+
+var Q7_TO_Q8 = {
+  "来院時の問診で十分": "q8_enough",
+  "他の方法で事前問診をしている": "q8_othermethod",
+  "質問を考えるのが手間": "q8_question_burden",
+  "患者さんの負担になる": "q8_patient_burden",
+  "個人情報をネットで扱うのが不安": "q8_privacy"
+};
+
+var QUESTIONS = {
+  q1: {
+    text: "しんきゅう予約の事前問診を使っていますか？",
+    kind: "single",
+    choices: [
+      "使っている",
+      "使っていたが、止めた",
+      "知っているが、使っていない",
+      "よく知らなかった"
+    ],
+    fixedOrder: true
+  },
+
+  q11: {
+    text: "患者さんからの回答は？",
+    kind: "single",
+    choices: [
+      "ほとんど届かない",
+      "届いているか分からない",
+      "届くが、あまり見ていない",
+      "見るが、あまり活かせていない",
+      "見て、活かしている"
+    ],
+    fixedOrder: true
+  },
+  q12_rare: {
+    text: "患者さんに、事前問診のことを伝えていますか？",
+    kind: "single",
+    choices: [
+      "はい（口頭）",
+      "はい（LINE・メール）",
+      "はい（掲示・チラシ）",
+      "いいえ（伝える機会がない）",
+      "いいえ（伝え方が分からない）"
+    ],
+    fixedOrder: true
+  },
+  q12_unsure: {
+    text: "分からない理由は？",
+    kind: "single",
+    choices: [
+      "見る場所が分からない",
+      "管理画面をあまり開かない",
+      { label: "その他", other: true }
+    ]
+  },
+  q12_notseeing: {
+    text: "見ていない理由は？",
+    kind: "single",
+    choices: [
+      "届いても気づかない",
+      "見る時間がない",
+      "見る場所が分からない",
+      "来院時に聞けば済む",
+      { label: "その他", other: true }
+    ]
+  },
+  q12_notusing: {
+    text: "活かせていない理由は？",
+    kind: "single",
+    choices: [
+      "回答が短い・曖昧",
+      "知りたい項目がない",
+      "直接聞く方が早い",
+      { label: "その他", other: true }
+    ]
+  },
+  q12_using: {
+    text: "一番役立っていることは？",
+    kind: "single",
+    choices: [
+      "事前に準備できる",
+      "問診が短くなる",
+      "患者さんが安心する",
+      { label: "その他", other: true }
+    ]
+  },
+  q14: {
+    text: "電話や来院で予約した患者さんにも、事前問診を送っていますか？",
+    kind: "single",
+    choices: [
+      "はい（その都度、URLやQRコードを送信）",
+      "はい（QRコードを院内に掲示）",
+      "いいえ（送れると知らなかった）",
+      "いいえ（手間・面倒）",
+      "いいえ（必要がない）"
+    ],
+    fixedOrder: true
+  },
+
+  q9: {
+    text: "止めた一番の理由は？",
+    kind: "single",
+    choices: [
+      "患者さんにとって負担",
+      "患者さんからの苦情",
+      "回答が来ない",
+      "ネット予約が少ない",
+      "見る時間がない",
+      "結局、聞き直す",
+      "質問の変更が面倒",
+      { label: "その他", other: true }
+    ]
+  },
+  q10_burden: {
+    text: "負担や苦情の中身は？",
+    kind: "single",
+    choices: [
+      "質問が多い",
+      "操作が分かりにくい",
+      "再来でも毎回出る",
+      "予約だけしたい",
+      { label: "その他", other: true }
+    ]
+  },
+  q10_notell: {
+    text: "患者さんに、事前問診のことを伝えていましたか？",
+    kind: "single",
+    choices: [
+      "はい（口頭）",
+      "はい（LINE・メール）",
+      "はい（掲示・チラシ）",
+      "いいえ（伝える機会がない）",
+      "いいえ（伝え方が分からない）"
+    ],
+    fixedOrder: true
+  },
+  q10_notime: {
+    text: "見る時間がない理由は？",
+    kind: "single",
+    choices: [
+      "施術が続く",
+      "直前の予約が多い",
+      "回答が届くのが直前",
+      { label: "その他", other: true }
+    ]
+  },
+  q10_reask: {
+    text: "聞き直す理由は？",
+    kind: "single",
+    choices: [
+      "回答が短い・曖昧",
+      "知りたい項目がない",
+      "直接聞く方が早い",
+      { label: "その他", other: true }
+    ]
+  },
+  q19: {
+    text: "電話や来院で予約した患者さんにも、URLやQRコードで事前問診を送れることは？",
+    kind: "single",
+    choices: [
+      "知っていた",
+      "知らなかった"
+    ],
+    fixedOrder: true
+  },
+
+  q7: {
+    text: "使っていない一番の理由は？",
+    kind: "grouped_accordion",
+    groups: [
+      {
+        head: "今のやり方で十分",
+        items: [
+          "来院時の問診で十分",
+          "他の方法で事前問診をしている"
+        ]
+      },
+      {
+        head: "使う場面が少ない",
+        items: [
+          "ネット予約が少ない",
+          "常連の患者さんが多い",
+          "電話予約の患者さんには使えないと思った"
+        ]
+      },
+      {
+        head: "費用や手間",
+        items: [
+          "費用がかかると思った",
+          "質問を考えるのが手間",
+          "始め方が分からない",
+          "忙しくて後回し"
+        ]
+      },
+      {
+        head: "患者さんや情報の心配",
+        items: [
+          "患者さんの負担になる",
+          "個人情報をネットで扱うのが不安"
+        ]
+      }
+    ],
+    otherLabel: "その他"
+  },
+  q8_enough: {
+    text: "今のやり方で十分な理由は？",
+    kind: "single",
+    choices: [
+      "対面で聞きたい",
+      "結局、聞き直す",
+      "聞いても、施術は変わらない",
+      "問診は短時間で済む",
+      { label: "その他", other: true }
+    ]
+  },
+  q8_othermethod: {
+    text: "今の事前問診で、手間に感じることは？",
+    kind: "method_burden",
+    methods: [
+      { label: "電話", burdens: ["話が長くなる", "施術中に出られない", "カルテへの書き写し", "特にない"] },
+      { label: "LINE・メール", burdens: ["1人ずつ送る", "返信の催促", "カルテへの書き写し", "特にない"] },
+      { label: "Webフォーム", burdens: ["フォームの作成・修正", "URLを送る", "カルテへの書き写し", "特にない"] },
+      { label: "その他", other: true }
+    ]
+  },
+  q8_question_burden: {
+    text: "手間に感じるのは？",
+    kind: "single",
+    choices: [
+      "聞く内容を決める",
+      "紙の問診票の入力し直し",
+      "初診と再来の出し分け",
+      { label: "その他", other: true }
+    ]
+  },
+  q8_patient_burden: {
+    text: "心配なことは？",
+    kind: "single",
+    choices: [
+      "高齢の方が操作できない",
+      "質問が多い",
+      "再来でも毎回出る",
+      { label: "その他", other: true }
+    ]
+  },
+  q8_privacy: {
+    text: "不安なことは？",
+    kind: "single",
+    choices: [
+      "情報の漏えい",
+      "保管のされ方",
+      { label: "その他", other: true }
+    ]
+  },
+
+  q15: {
+    text: "しんきゅうコンパスからのお知らせや予約の通知に気づくのは？",
+    kind: "single",
+    choices: [
+      "メール",
+      "管理画面を開いたとき",
+      "あまり気づかない",
+      { label: "その他", other: true }
+    ]
+  },
+  q5: {
+    text: "来院前に、事前問診をしていますか？",
+    kind: "single",
+    choices: [
+      "はい（予約の電話・LINE・メール・フォームなど）",
+      "いいえ"
+    ],
+    fixedOrder: true
+  },
+  q6_pre: {
+    text: "今の事前問診で、手間に感じることは？",
+    kind: "method_burden",
+    methods: [
+      { label: "電話", burdens: ["話が長くなる", "施術中に出られない", "カルテへの書き写し", "特にない"] },
+      { label: "LINE・メール", burdens: ["1人ずつ送る", "返信の催促", "カルテへの書き写し", "特にない"] },
+      { label: "Webフォーム", burdens: ["フォームの作成・修正", "URLを送る", "カルテへの書き写し", "特にない"] },
+      { label: "その他", other: true }
+    ]
+  },
+  q6_none: {
+    text: "事前問診をしていない理由は？",
+    kind: "single",
+    choices: [
+      "来院時の問診で十分",
+      "話しながら問診したい",
+      "患者さんの負担になる",
+      "事前に読む時間がない",
+      "事前問診をする方法がなかった",
+      { label: "その他", other: true }
+    ]
+  },
+
+  final: { kind: "final" },
+
+  q17: {
+    text: "自由記入欄（ご意見をお寄せください）",
+    kind: "text"
+  },
+  q18: {
+    text: "もしよろしければ事前問診について15分ほど、お話を伺えませんか？",
+    kind: "single",
+    choices: ["はい", "いいえ"],
+    fixedOrder: true
+  }
+};
+
+/* ===========================================================================
+   画面フロー
+   =========================================================================== */
+function computeFlow() {
+  var a = state.answers;
+  var flow = [];
+  if (!state.salon_id && !a._intro_done) flow.push("intro_name");
+  else flow.push("intro");
+  flow.push("q1");
+  var stateNo = Q1_TO_STATE[a.q1] || "";
+  a._state_no = stateNo;
+  if (stateNo === "5") {
+    flow.push("q11");
+    var q12 = Q11_TO_Q12[a.q11];
+    if (q12) flow.push(q12);
+    flow.push("q14");
+  } else if (stateNo === "4") {
+    flow.push("q9");
+    var q10 = Q9_TO_Q10[a.q9];
+    if (q10) flow.push(q10);
+    flow.push("q19");
+  } else if (stateNo === "3") {
+    flow.push("q7");
+    var q8 = Q7_TO_Q8[a.q7];
+    if (q8) flow.push(q8);
+    if (a.q7 && a.q7 !== "電話予約の患者さんには使えないと思った") flow.push("q19");
+  } else if (stateNo === "2") {
+    flow.push("q15");
+    flow.push("q5");
+    if (a.q5 === "はい（予約の電話・LINE・メール・フォームなど）") flow.push("q6_pre");
+    else if (a.q5 === "いいえ") flow.push("q6_none");
+  }
+  flow.push("final");
+  flow.push("thanks");
+  return flow;
+}
+
+// 子設問の上部に出す小見出し：親設問の答え（spec_v6 の【 】の見出しに相当）
+function subheadingFor(screen) {
+  var a = state.answers;
+  if (screen.indexOf("q12_") === 0) return a.q11 || null;
+  if (screen.indexOf("q10_") === 0) return a.q9 || null;
+  if (screen.indexOf("q8_") === 0) return a.q7 || null;
+  if (screen === "q6_pre") return "事前問診をしている";
+  if (screen === "q6_none") return "事前問診をしていない";
+  return null;
+}
+
+function remainingUpperBound(screen) {
+  var stateNo = state.answers._state_no;
+  if (screen === "intro" || screen === "intro_name") return 5;
+  if (screen === "q1") return 5;
+  if (screen === "final") return 1;
+  if (stateNo === "5") {
+    if (screen === "q11") return 4;
+    if (screen.indexOf("q12_") === 0) return 3;
+    if (screen === "q14") return 2;
+  } else if (stateNo === "4") {
+    if (screen === "q9") return 4;
+    if (screen.indexOf("q10_") === 0) return 3;
+    if (screen === "q19") return 2;
+  } else if (stateNo === "3") {
+    if (screen === "q7") return 4;
+    if (screen.indexOf("q8_") === 0) return 3;
+    if (screen === "q19") return 2;
+  } else if (stateNo === "2") {
+    if (screen === "q15") return 4;
+    if (screen === "q5") return 3;
+    if (screen === "q6_pre" || screen === "q6_none") return 2;
+  }
+  return 1;
+}
+
+/* ===========================================================================
+   描画
+   =========================================================================== */
+var app = document.getElementById("app");
+
+function render() {
+  if (state.src === "mail" && new Date() > DEADLINE_JST) {
+    renderClosed();
+    return;
+  }
+  if (state.src === "cs") {
+    renderCS();
+    return;
+  }
+  var flow = computeFlow();
+  var idx = state.current == null ? 0 : flow.indexOf(state.current);
+  if (idx < 0) idx = 0;
+  var screen = flow[idx];
+  state.current = screen;
+  saveState();
+  if (screen === "thanks") {
+    renderThanks();
+    return;
+  }
+  renderScreen(screen, idx, flow);
+}
+
+function renderClosed() {
+  app.innerHTML = "";
+  var c = document.createElement("div");
+  c.className = "card closed";
+  c.innerHTML = "<h1>アンケートの受付を終了しました</h1>" +
+    "<p>2026年12月4日（金）をもって、受付を終了しました。ご回答をご検討いただきありがとうございました。</p>" +
+    "<p class=\"note\">いただいたお考えは、使い方の動画と始め方の手順に反映してお届けします。</p>";
+  app.appendChild(c);
+}
+
+function renderScreen(screen, idx, flow) {
+  app.innerHTML = "";
+  var c = document.createElement("div");
+  c.className = "card";
+
+  if (screen === "intro" || screen === "intro_name") {
+    renderIntro(c, idx, flow);
+  } else {
+    renderQuestion(c, screen, idx, flow);
+  }
+  app.appendChild(c);
+  syncAccAria();
+  window.scrollTo(0, 0);
+}
+
+function renderIntro(c, idx, flow) {
+  var h = document.createElement("h1");
+  h.textContent = "事前問診アンケート（約2分）";
+  c.appendChild(h);
+
+  var p1 = document.createElement("p");
+  p1.textContent = "ご回答ありがとうございます。";
+  c.appendChild(p1);
+
+  var p2 = document.createElement("p");
+  p2.textContent = "いただいたご意見は集計後、メールマガジンでまとめてお届けします。";
+  c.appendChild(p2);
+
+  // 院番号がない、または形式が合わない（リンクの差し込み失敗など）ときは院名を聞く
+  var needName = !SALON_ID_RE.test(state.salon_id || "");
+  var nameInput = null;
+  var err = null;
+  if (needName) {
+    var lbl = document.createElement("label");
+    lbl.className = "lbl";
+    lbl.textContent = "院名（必須）";
+    lbl.style.cssText = "display:block;font-weight:600;margin:12px 0 6px;";
+    c.appendChild(lbl);
+    nameInput = document.createElement("input");
+    nameInput.type = "text";
+    nameInput.autocomplete = "organization";
+    nameInput.value = state.salon_name || "";
+    c.appendChild(nameInput);
+    err = document.createElement("div");
+    err.className = "err";
+    err.style.display = "none";
+    c.appendChild(err);
+  }
+
+  var nav = document.createElement("div");
+  nav.className = "nav";
+  nav.style.justifyContent = "flex-end";
+  var btn = document.createElement("button");
+  btn.className = "btn btn-primary";
+  btn.type = "button";
+  btn.textContent = "はじめる";
+  btn.addEventListener("click", function() {
+    if (needName) {
+      var v = (nameInput.value || "").trim();
+      if (!v) {
+        err.style.display = "block";
+        err.textContent = "院名をご入力ください。";
+        nameInput.focus();
+        return;
+      }
+      state.salon_name = v;
+      state.answers._intro_done = true;
+      postScreen("salon_name", v);
+    } else {
+      state.answers._intro_done = true;
+    }
+    goNext();
+  });
+  nav.appendChild(btn);
+  c.appendChild(nav);
+}
+
+// 選んでから次へ進むまでの待ち。1本だけ持ち、発火時に画面が変わっていたら進まない（二度押し対策）
+var advanceTimer = null;
+function cancelScheduledNext() {
+  if (advanceTimer) { clearTimeout(advanceTimer); advanceTimer = null; }
+}
+function scheduleNext(screen) {
+  cancelScheduledNext();
+  advanceTimer = setTimeout(function() {
+    advanceTimer = null;
+    if (state.current === screen) goNext();
+  }, 500);
+}
+
+function goNext() {
+  cancelScheduledNext();
+  clearOffPathAnswers();
+  var flow = computeFlow();
+  var idx = flow.indexOf(state.current);
+  if (idx < 0) idx = 0;
+  state.history.push(state.current);
+  state.current = flow[idx + 1] || "thanks";
+  saveState();
+  render();
+}
+function goBack() {
+  cancelScheduledNext();
+  var flow = computeFlow();
+  while (state.history.length) {
+    var prev = state.history.pop();
+    if (flow.indexOf(prev) >= 0) {
+      state.current = prev;
+      saveState();
+      render();
+      return;
+    }
+  }
+  state.current = flow[0] || "intro";
+  saveState();
+  render();
+}
+
+// いまの経路にない答えを消す。シートに書かれた分も空で上書きする（答えを変えたときの残りをなくす）
+function clearOffPathAnswers() {
+  var flow = computeFlow();
+  var allowed = {};
+  flow.forEach(function(scr) {
+    allowed[scr] = true;
+    allowed[scr + "_other"] = true;
+    allowed[scr + "_method"] = true;
+    allowed[scr + "_burden"] = true;
+    allowed[scr + "_method_other"] = true;
+    if (scr === "final") {
+      allowed.q17 = true;
+      allowed.q18 = true;
+    }
+  });
+  allowed["_state_no"] = true;
+  allowed["_intro_done"] = true;
+  var cleared = {}, n = 0;
+  Object.keys(state.answers).forEach(function(k) {
+    if (allowed[k]) return;
+    var had = state.answers[k];
+    delete state.answers[k];
+    if (k.charAt(0) !== "_" && had !== "" && had != null) { cleared[k] = ""; n++; }
+  });
+  // 空での上書きは、1回の送信にまとめる
+  if (n) postScreen("_clear", "", { values: cleared });
+  saveState();
+}
+
+function renderQuestion(c, screen, idx, flow) {
+  var q = QUESTIONS[screen];
+  if (!q) { c.textContent = "（この設問は現在ご利用いただけません）"; return; }
+
+  var rest = remainingUpperBound(screen);
+  if (rest > 0) {
+    // 何問目か（実際に通った画面の数）と、この先の最大の画面数から進み具合を出す。
+    // 総数は院の答えで変わるので数字では出さず、「質問 n」とバーで示す（途中で数字が飛ばない）
+    var pos = Math.max(1, idx);
+    var pct = Math.round((pos / (pos - 1 + rest)) * 100);
+    var wrap = document.createElement("div");
+    wrap.className = "progress";
+    wrap.setAttribute("role", "progressbar");
+    wrap.setAttribute("aria-valuemin", "0");
+    wrap.setAttribute("aria-valuemax", "100");
+    wrap.setAttribute("aria-valuenow", String(pct));
+    var meta = document.createElement("div");
+    meta.className = "progress-meta";
+    var left = document.createElement("span");
+    left.className = "step-num";
+    left.textContent = screen === "final" ? "最後の質問" : ("質問 " + pos);
+    wrap.setAttribute("aria-label", left.textContent);
+    meta.appendChild(left);
+    wrap.appendChild(meta);
+    var bar = document.createElement("div");
+    bar.className = "progress-bar";
+    var fill = document.createElement("span");
+    fill.className = "progress-fill";
+    fill.style.width = pct + "%";
+    bar.appendChild(fill);
+    wrap.appendChild(bar);
+    c.appendChild(wrap);
+  }
+
+  if (q.kind === "final") {
+    renderFinal(c);
+    return;
+  }
+
+  if (screen === "q9" || screen === "q11") c.classList.add("compact-choices");
+
+  var sub = subheadingFor(screen);
+  if (sub) {
+    var subEl = document.createElement("div");
+    subEl.className = "subheading";
+    subEl.textContent = sub;
+    c.appendChild(subEl);
+  }
+
+  var h = document.createElement("h2");
+  h.textContent = q.text;
+  c.appendChild(h);
+
+  if (q.kind === "single") {
+    renderSingle(c, screen, q);
+  } else if (q.kind === "grouped_accordion") {
+    renderGroupedAccordion(c, screen, q);
+  } else if (q.kind === "method_burden") {
+    renderMethodBurden(c, screen, q);
+  } else if (q.kind === "text") {
+    renderText(c, screen, q);
+  }
+}
+
+function renderFinal(c) {
+  var q17 = QUESTIONS.q17;
+  var q18 = QUESTIONS.q18;
+
+  var lbl18 = document.createElement("h2");
+  lbl18.textContent = q18.text;
+  c.appendChild(lbl18);
+  var reqWrap = document.createElement("div");
+  reqWrap.className = "sub-label";
+  reqWrap.innerHTML = '<span class="req-badge">必須</span>「はい」の場合は、次の画面で日程お選びください。（オンライン or 電話で実施）';
+  reqWrap.style.cssText = "margin:-10px 0 8px;";
+  c.appendChild(reqWrap);
+
+  // 未選択で送信したときのエラーは、選択肢のすぐ上に出す
+  var errFinal = document.createElement("div");
+  errFinal.className = "err err-box";
+  errFinal.setAttribute("role", "alert");
+  errFinal.style.display = "none";
+  c.appendChild(errFinal);
+
+  var group18 = document.createElement("div");
+  group18.setAttribute("role", "radiogroup");
+  group18.setAttribute("aria-label", q18.text);
+  var buttons = [];
+  q18.choices.forEach(function(ch) {
+    var btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = label(ch);
+    btn.setAttribute("role", "radio");
+    var val = valueOf(ch);
+    var isSel = state.answers.q18 === val;
+    if (isSel) btn.classList.add("selected");
+    btn.setAttribute("aria-checked", isSel ? "true" : "false");
+    btn.addEventListener("click", function() {
+      try { if (document.activeElement && document.activeElement.blur) document.activeElement.blur(); } catch (e) {}
+      state.answers.q18 = val;
+      buttons.forEach(function(b) { b.classList.remove("selected"); b.setAttribute("aria-checked", "false"); });
+      btn.classList.add("selected");
+      btn.setAttribute("aria-checked", "true");
+      errFinal.style.display = "none";
+      group18.classList.remove("need-answer");
+      saveState();
+    });
+    buttons.push(btn);
+    group18.appendChild(btn);
+  });
+  c.appendChild(group18);
+
+  var lbl17 = document.createElement("div");
+  lbl17.className = "sub-label";
+  lbl17.style.cssText = "margin-top:22px;";
+  lbl17.innerHTML = '<span class="opt-badge">任意</span>' + q17.text;
+  c.appendChild(lbl17);
+  var ta = document.createElement("textarea");
+  ta.rows = 3;
+  ta.value = state.answers.q17 || "";
+  ta.placeholder = "例：事前問診で何が変わるのか";
+  ta.addEventListener("input", function() {
+    state.answers.q17 = ta.value;
+    saveState();
+  });
+  c.appendChild(ta);
+
+  var nav = document.createElement("div");
+  nav.className = "nav";
+  var back = document.createElement("button");
+  back.className = "btn";
+  back.type = "button";
+  back.textContent = "戻る";
+  back.addEventListener("click", goBack);
+  nav.appendChild(back);
+  var submit = document.createElement("button");
+  submit.className = "btn btn-primary";
+  submit.type = "button";
+  submit.textContent = "送信する";
+  submit.addEventListener("click", function() {
+    if (!state.answers.q18) {
+      errFinal.style.display = "block";
+      errFinal.textContent = "「はい」か「いいえ」をお選びください。";
+      group18.classList.add("need-answer");
+      try { errFinal.scrollIntoView({ behavior: "smooth", block: "center" }); } catch (e) { window.scrollTo(0, 0); }
+      return;
+    }
+    errFinal.style.display = "none";
+    clearOffPathAnswers();
+    // Q17 は Q18 と一緒に送る（送信の数を減らす）
+    postScreen("q18", state.answers.q18, { done: true, full: true });
+    goNext();
+  });
+  nav.appendChild(submit);
+  c.appendChild(nav);
+}
+
+function label(choice) { return typeof choice === "string" ? choice : choice.label; }
+function valueOf(choice) {
+  if (typeof choice === "string") return choice;
+  return choice.value || choice.label;
+}
+
+function orderedChoices(screen, q) {
+  if (q.fixedOrder || FIXED_ORDER_QS[screen]) return q.choices.slice();
+  var fixedTail = [], rest = [];
+  q.choices.forEach(function(ch) {
+    if (typeof ch === "string") {
+      if (ch === "その他" || ch === "特にない") fixedTail.push(ch);
+      else rest.push(ch);
+    } else if (typeof ch === "object" && (ch.other || ch.keepLast)) {
+      fixedTail.push(ch);
+    } else {
+      rest.push(ch);
+    }
+  });
+  var shuffled = seededShuffle(rest, screen);
+  return shuffled.concat(fixedTail);
+}
+
+function renderSingle(c, screen, q) {
+  var chosen = state.answers[screen];
+  var items = orderedChoices(screen, q);
+  var otherText = state.answers[screen + "_other"] || "";
+  var buttons = [];
+  var group = document.createElement("div");
+  group.setAttribute("role", "radiogroup");
+  group.setAttribute("aria-label", q.text);
+  items.forEach(function(ch) {
+    var btn = document.createElement("button");
+    btn.className = "choice";
+    btn.type = "button";
+    btn.textContent = label(ch);
+    btn.setAttribute("role", "radio");
+    var val = valueOf(ch);
+    var isSel = chosen === val;
+    if (isSel) btn.classList.add("selected");
+    btn.setAttribute("aria-checked", isSel ? "true" : "false");
+    btn.addEventListener("click", function() {
+      state.answers[screen] = val;
+      buttons.forEach(function(b) { b.classList.remove("selected"); b.setAttribute("aria-checked", "false"); });
+      btn.classList.add("selected");
+      btn.setAttribute("aria-checked", "true");
+      saveState();
+      postScreen(screen, val);
+      var isOther = typeof ch === "object" && ch.other;
+      if (isOther) {
+        cancelScheduledNext();
+        rebuildWithOther();
+        setTimeout(function() {
+          var ta = c.querySelector(".other-text textarea");
+          if (ta) {
+            ta.scrollIntoView({ behavior: "smooth", block: "center" });
+            ta.focus({ preventScroll: true });
+          }
+        }, 60);
+      } else {
+        if (state.answers[screen + "_other"]) {
+          state.answers[screen + "_other"] = "";
+          saveState();
+          postScreen(screen + "_other", "");
+        }
+        scheduleNext(screen);
+      }
+    });
+    buttons.push(btn);
+    group.appendChild(btn);
+  });
+  c.appendChild(group);
+
+  function rebuildWithOther() {
+    Array.prototype.slice.call(c.querySelectorAll(".other-text, .nav")).forEach(function(el){ el.remove(); });
+    var sel = state.answers[screen];
+    var ch = items.filter(function(x){ return valueOf(x) === sel; })[0];
+    var isOther = ch && typeof ch === "object" && ch.other;
+    if (isOther) {
+      var wrap = document.createElement("div");
+      wrap.className = "other-text";
+      var lbl = document.createElement("div");
+      lbl.textContent = "内容をご記入ください（任意）";
+      lbl.style.cssText = "font-size:13px;color:var(--muted);margin:10px 0 6px;";
+      wrap.appendChild(lbl);
+      var ta = document.createElement("textarea");
+      ta.rows = 2;
+      ta.value = otherText;
+      ta.addEventListener("input", function() {
+        state.answers[screen + "_other"] = ta.value;
+        saveState();
+      });
+      ta.addEventListener("blur", function() {
+        postScreen(screen + "_other", ta.value);
+      });
+      wrap.appendChild(ta);
+      c.appendChild(wrap);
+    }
+    c.appendChild(buildNav(true, true));
+  }
+  var sel = state.answers[screen];
+  var selCh = items.filter(function(x){ return valueOf(x) === sel; })[0];
+  var isSpecial = selCh && typeof selCh === "object" && selCh.other;
+  if (isSpecial) {
+    rebuildWithOther();
+  } else {
+    c.appendChild(buildNav(true, !!sel));
+  }
+}
+
+function renderGroupedAccordion(c, screen, q) {
+  var groups = seededShuffle(q.groups, screen + ".groups").map(function(g) {
+    return { head: g.head, items: seededShuffle(g.items, screen + ".items." + g.head) };
+  });
+  var chosen = state.answers[screen];
+  var otherText = state.answers[screen + "_other"] || "";
+
+  var openHead = null;
+  groups.forEach(function(g) {
+    if (g.items.indexOf(chosen) !== -1) openHead = g.head;
+  });
+
+  var accEls = [];
+  function openOnly(head) {
+    accEls.forEach(function(entry) {
+      if (entry.group.head === head) { entry.wrap.classList.add("open"); entry.body.style.display = "block"; }
+      else { entry.wrap.classList.remove("open"); entry.body.style.display = "none"; }
+    });
+  }
+
+  groups.forEach(function(g) {
+    var wrap = document.createElement("div");
+    wrap.className = "acc-group";
+    var head = document.createElement("button");
+    head.className = "acc-head";
+    head.type = "button";
+    var ht = document.createElement("span");
+    ht.textContent = g.head;
+    head.appendChild(ht);
+    var summary = document.createElement("span");
+    summary.className = "acc-summary";
+    summary.textContent = g.items.join("、");
+    head.appendChild(summary);
+    wrap.appendChild(head);
+    var body = document.createElement("div");
+    body.className = "acc-body";
+    body.style.display = "none";
+    g.items.forEach(function(item) {
+      var b = document.createElement("button");
+      b.className = "choice";
+      b.type = "button";
+      b.textContent = item;
+      b.dataset.val = item;
+      if (chosen === item) b.classList.add("selected");
+      b.addEventListener("click", function() {
+        state.answers[screen] = item;
+        if (state.answers[screen + "_other"]) {
+          state.answers[screen + "_other"] = "";
+          postScreen(screen + "_other", "");
+        }
+        saveState();
+        postScreen(screen, item);
+        // ハイライト更新
+        accEls.forEach(function(entry) {
+          Array.prototype.slice.call(entry.body.querySelectorAll(".choice")).forEach(function(bb) {
+            bb.classList.toggle("selected", bb.dataset.val === item);
+          });
+        });
+        var otherBtn = c.querySelector(".acc-other");
+        if (otherBtn) otherBtn.classList.remove("selected");
+        scheduleNext(screen);
+      });
+      body.appendChild(b);
+    });
+    wrap.appendChild(body);
+    head.addEventListener("click", function() {
+      if (wrap.classList.contains("open")) {
+        wrap.classList.remove("open");
+        body.style.display = "none";
+      } else {
+        openOnly(g.head);
+      }
+    });
+    accEls.push({ wrap: wrap, body: body, group: g });
+    c.appendChild(wrap);
+  });
+
+  var otherBtn = document.createElement("button");
+  otherBtn.className = "choice acc-other";
+  otherBtn.type = "button";
+  otherBtn.textContent = q.otherLabel || "その他";
+  otherBtn.style.marginTop = "12px";
+  if (chosen === (q.otherLabel || "その他")) otherBtn.classList.add("selected");
+  otherBtn.addEventListener("click", function() {
+    state.answers[screen] = q.otherLabel || "その他";
+    saveState();
+    postScreen(screen, state.answers[screen]);
+    accEls.forEach(function(entry) {
+      Array.prototype.slice.call(entry.body.querySelectorAll(".choice")).forEach(function(bb){ bb.classList.remove("selected"); });
+    });
+    otherBtn.classList.add("selected");
+    cancelScheduledNext();
+    rebuildOtherBox();
+    setTimeout(function() {
+      var ta = c.querySelector(".other-text textarea");
+      if (ta) { ta.scrollIntoView({ behavior: "smooth", block: "center" }); ta.focus({ preventScroll: true }); }
+    }, 60);
+  });
+  c.appendChild(otherBtn);
+
+  function rebuildOtherBox() {
+    Array.prototype.slice.call(c.querySelectorAll(".other-text, .nav")).forEach(function(el){ el.remove(); });
+    var wrap = document.createElement("div");
+    wrap.className = "other-text";
+    var lbl = document.createElement("div");
+    lbl.textContent = "内容をご記入ください（任意）";
+    lbl.style.cssText = "font-size:13px;color:var(--muted);margin:10px 0 6px;";
+    wrap.appendChild(lbl);
+    var ta = document.createElement("textarea");
+    ta.rows = 2;
+    ta.value = state.answers[screen + "_other"] || otherText;
+    ta.addEventListener("input", function() {
+      state.answers[screen + "_other"] = ta.value;
+      saveState();
+    });
+    ta.addEventListener("blur", function() { postScreen(screen + "_other", ta.value); });
+    wrap.appendChild(ta);
+    c.appendChild(wrap);
+    c.appendChild(buildNav(true, true));
+  }
+
+  if (openHead) openOnly(openHead);
+  if (chosen === (q.otherLabel || "その他")) rebuildOtherBox();
+  else c.appendChild(buildNav(true, !!chosen));
+}
+
+function renderMethodBurden(c, screen, q) {
+  var chosenMethod = state.answers[screen + "_method"] || "";
+  var chosenBurden = state.answers[screen + "_burden"] || "";
+
+  var accEls = [];
+  function openOnly(methodLabel) {
+    accEls.forEach(function(entry) {
+      if (entry.method === methodLabel) { entry.wrap.classList.add("open"); entry.body.style.display = "block"; }
+      else { entry.wrap.classList.remove("open"); entry.body.style.display = "none"; }
+    });
+  }
+  function rebuildNav() {
+    Array.prototype.slice.call(c.querySelectorAll(".nav")).forEach(function(el){ el.remove(); });
+    var ready = !!chosenMethod && (chosenMethod === "その他" ? true : !!chosenBurden);
+    c.appendChild(buildNav(true, ready));
+  }
+
+  var otherBtn = null;
+  q.methods.forEach(function(m) {
+    if (m.other) {
+      var btn = document.createElement("button");
+      btn.className = "choice";
+      btn.type = "button";
+      btn.textContent = m.label;
+      btn.style.marginTop = "12px";
+      if (chosenMethod === m.label) btn.classList.add("selected");
+      btn.addEventListener("click", function() {
+        cancelScheduledNext();
+        var hadBurden = !!state.answers[screen + "_burden"];
+        chosenMethod = m.label;
+        chosenBurden = "";
+        state.answers[screen + "_method"] = chosenMethod;
+        state.answers[screen + "_burden"] = "";
+        saveState();
+        if (hadBurden) postScreen(screen + "_burden", "");
+        postScreen(screen + "_method", chosenMethod);
+        accEls.forEach(function(entry){ entry.wrap.classList.remove("open"); entry.body.style.display = "none"; Array.prototype.slice.call(entry.body.querySelectorAll(".choice")).forEach(function(bb){ bb.classList.remove("selected"); }); });
+        showOtherBox();
+        otherBtn.classList.add("selected");
+        rebuildNav();
+      });
+      otherBtn = btn;
+      c.appendChild(btn);
+    } else {
+      var wrap = document.createElement("div");
+      wrap.className = "acc-group";
+      var head = document.createElement("button");
+      head.className = "acc-head";
+      head.type = "button";
+      var ht = document.createElement("span");
+      ht.textContent = m.label;
+      head.appendChild(ht);
+      var summary = document.createElement("span");
+      summary.className = "acc-summary";
+      summary.textContent = m.burdens.join("、");
+      head.appendChild(summary);
+      wrap.appendChild(head);
+      var body = document.createElement("div");
+      body.className = "acc-body";
+      body.style.display = "none";
+      m.burdens.forEach(function(bu) {
+        var b = document.createElement("button");
+        b.className = "choice";
+        b.type = "button";
+        b.textContent = bu;
+        if (chosenMethod === m.label && chosenBurden === bu) b.classList.add("selected");
+        b.addEventListener("click", function() {
+          chosenMethod = m.label;
+          chosenBurden = bu;
+          state.answers[screen + "_method"] = chosenMethod;
+          state.answers[screen + "_burden"] = chosenBurden;
+          if (state.answers[screen + "_method_other"]) {
+            state.answers[screen + "_method_other"] = "";
+            postScreen(screen + "_method_other", "");
+          }
+          saveState();
+          postScreen(screen + "_method", chosenMethod);
+          postScreen(screen + "_burden", chosenBurden);
+          accEls.forEach(function(entry) {
+            Array.prototype.slice.call(entry.body.querySelectorAll(".choice")).forEach(function(bb) {
+              bb.classList.toggle("selected", entry.method === chosenMethod && bb.textContent === chosenBurden);
+            });
+          });
+          if (otherBtn) otherBtn.classList.remove("selected");
+          Array.prototype.slice.call(c.querySelectorAll(".other-text")).forEach(function(el){ el.remove(); });
+          rebuildNav();
+          scheduleNext(screen);
+        });
+        body.appendChild(b);
+      });
+      wrap.appendChild(body);
+      head.addEventListener("click", function() {
+        if (wrap.classList.contains("open")) {
+          wrap.classList.remove("open");
+          body.style.display = "none";
+        } else {
+          openOnly(m.label);
+        }
+      });
+      accEls.push({ wrap: wrap, body: body, method: m.label });
+      c.appendChild(wrap);
+    }
+  });
+
+  // 「その他」の記述欄（戻ってきたときも、書いた内容を出す）
+  function showOtherBox() {
+    Array.prototype.slice.call(c.querySelectorAll(".other-text")).forEach(function(el){ el.remove(); });
+    var box = document.createElement("div");
+    box.className = "other-text";
+    var lbl = document.createElement("div");
+    lbl.textContent = "「その他」の内容をご記入ください（任意）";
+    lbl.style.cssText = "font-size:13px;color:var(--muted);margin:10px 0 6px;";
+    box.appendChild(lbl);
+    var ta = document.createElement("textarea");
+    ta.rows = 2;
+    ta.value = state.answers[screen + "_method_other"] || "";
+    ta.addEventListener("input", function() {
+      state.answers[screen + "_method_other"] = ta.value;
+      saveState();
+    });
+    ta.addEventListener("blur", function() {
+      postScreen(screen + "_method_other", ta.value);
+    });
+    box.appendChild(ta);
+    otherBtn.insertAdjacentElement("afterend", box);
+  }
+
+  if (chosenMethod && chosenMethod !== "その他") openOnly(chosenMethod);
+  if (chosenMethod === "その他" && otherBtn) showOtherBox();
+  rebuildNav();
+}
+
+function renderText(c, screen, q) {
+  var ta = document.createElement("textarea");
+  ta.rows = 4;
+  ta.value = state.answers[screen] || "";
+  ta.addEventListener("input", function() {
+    state.answers[screen] = ta.value;
+    saveState();
+  });
+  c.appendChild(ta);
+  var note = document.createElement("div");
+  note.className = "note";
+  note.textContent = "任意です。空欄のまま次へ進めます。";
+  c.appendChild(note);
+  var nav = document.createElement("div");
+  nav.className = "nav";
+  var back = document.createElement("button");
+  back.className = "btn";
+  back.type = "button";
+  back.textContent = "戻る";
+  back.addEventListener("click", goBack);
+  nav.appendChild(back);
+  var next = document.createElement("button");
+  next.className = "btn btn-primary";
+  next.type = "button";
+  next.textContent = "次へ";
+  next.addEventListener("click", function() {
+    postScreen(screen, state.answers[screen] || "");
+    goNext();
+  });
+  nav.appendChild(next);
+  c.appendChild(nav);
+}
+
+function buildNav(showBack, showNext) {
+  var nav = document.createElement("div");
+  nav.className = "nav";
+  if (showBack) {
+    var back = document.createElement("button");
+    back.className = "btn";
+    back.type = "button";
+    back.textContent = "戻る";
+    back.addEventListener("click", goBack);
+    nav.appendChild(back);
+  } else {
+    var sp = document.createElement("span"); nav.appendChild(sp);
+  }
+  if (showNext) {
+    var next = document.createElement("button");
+    next.className = "btn btn-primary";
+    next.type = "button";
+    next.textContent = "次へ";
+    next.addEventListener("click", function() {
+      var screen = state.current;
+      postScreen(screen, state.answers[screen] || "");
+      goNext();
+    });
+    nav.appendChild(next);
+  }
+  return nav;
+}
+
+function renderThanks() {
+  app.innerHTML = "";
+  var c = document.createElement("div");
+  c.className = "card thanks";
+  var a = state.answers;
+
+  var h = document.createElement("h1");
+  h.textContent = "ご回答、ありがとうございました。";
+  c.appendChild(h);
+
+  var section = document.createElement("div");
+  section.style.marginTop = "14px";
+  if (a.q18 === "はい") {
+    section.appendChild(makeCalendarBlock());
+  }
+  var editLink = document.createElement("button");
+  editLink.className = "btn-link";
+  editLink.type = "button";
+  editLink.textContent = "回答を見直す";
+  editLink.style.cssText = "display:block;margin-top:14px;";
+  editLink.addEventListener("click", function() {
+    state.current = "final";
+    // 最後の画面から［戻る］で1つ前の設問へ戻れるように、履歴の末尾の最後の画面を外す
+    if (state.history[state.history.length - 1] === "final") state.history.pop();
+    state.complete_sent = false;
+    saveState();
+    render();
+  });
+  section.appendChild(editLink);
+
+  c.appendChild(section);
+  app.appendChild(c);
+  state.done = true;
+  clearOffPathAnswers();
+  // 完了の送信は1回だけ（お礼画面の再読み込みで完了時刻が動かないように）
+  if (!state.complete_sent) {
+    state.complete_sent = true;
+    postScreen("_complete", "done", { done: true, full: true });
+  }
+  saveState();
+  window.scrollTo(0, 0);
+}
+
+function makeCalendarBlock() {
+  var wrap = document.createElement("div");
+  wrap.style.cssText = "margin-top:20px;padding-top:20px;border-top:1px solid var(--line-soft);";
+  var lead = document.createElement("h2");
+  lead.textContent = "カレンダーから日程をお選びください";
+  lead.style.cssText = "font-size:16px;margin-bottom:12px;padding-bottom:10px;";
+  wrap.appendChild(lead);
+  // カレンダーが表示されない・操作しにくいときのための、別タブで開くボタン（カレンダーの下に置く）
+  var open = document.createElement("a");
+  open.className = "btn";
+  open.href = "https://shinq-compass-hearing.youcanbook.me/";
+  open.target = "_blank";
+  open.rel = "noopener noreferrer";
+  open.textContent = "カレンダーを別のタブで開く";
+  open.style.cssText = "display:inline-block;text-decoration:none;margin-top:14px;";
+  var ifr = document.createElement("iframe");
+  ifr.src = "https://shinq-compass-hearing.youcanbook.me/";
+  ifr.setAttribute("frameborder", "0");
+  ifr.setAttribute("scrolling", "yes");
+  ifr.setAttribute("title", "日程予約のカレンダー");
+  ifr.style.cssText = "width:100%;height:clamp(640px,120vh,1100px);border:0;border-radius:10px;box-shadow:var(--shadow-sm);background:var(--surface);";
+  ifr.setAttribute("referrerpolicy", "no-referrer");
+  ifr.setAttribute("sandbox", "allow-scripts allow-forms allow-same-origin allow-popups allow-top-navigation-by-user-activation");
+  wrap.appendChild(ifr);
+  wrap.appendChild(open);
+  return wrap;
+}
+
+/* ===========================================================================
+   CSモード
+   =========================================================================== */
+function renderCS() {
+  app.innerHTML = "";
+  if (!state.cs_header_done) {
+    renderCSHeader();
+    return;
+  }
+  renderCSQuestionsOnePage();
+}
+
+function renderCSHeader() {
+  var c = document.createElement("div");
+  c.className = "card";
+  var h = document.createElement("h1");
+  h.textContent = "CS用：事前問診アンケート 入力";
+  c.appendChild(h);
+  var p = document.createElement("p");
+  p.className = "lead";
+  p.textContent = "院の回答と区別するため、必ずこの画面から入力してください。";
+  c.appendChild(p);
+
+  var b1 = document.createElement("div");
+  b1.className = "cs-block";
+  var l1 = document.createElement("label"); l1.className = "lbl"; l1.textContent = "院番号（必須）";
+  var i1 = document.createElement("input"); i1.type = "text"; i1.inputMode = "numeric"; i1.value = state.salon_id || "";
+  var err = document.createElement("div"); err.className = "err"; err.style.display = "none";
+  b1.appendChild(l1); b1.appendChild(i1); b1.appendChild(err);
+  c.appendChild(b1);
+
+  var b2 = document.createElement("div");
+  b2.className = "cs-block";
+  var l2 = document.createElement("label"); l2.className = "lbl"; l2.textContent = "経路";
+  b2.appendChild(l2);
+  var routes = ["無料体験のアポ", "ONを依頼する電話"];
+  routes.forEach(function(r) {
+    var btn = document.createElement("button");
+    btn.className = "choice"; btn.type = "button"; btn.textContent = r;
+    if (state.cs_route === r) btn.classList.add("selected");
+    btn.addEventListener("click", function() {
+      state.cs_route = r;
+      Array.prototype.slice.call(b2.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+      btn.classList.add("selected");
+      saveState();
+    });
+    b2.appendChild(btn);
+  });
+  c.appendChild(b2);
+
+  var b3 = document.createElement("div");
+  b3.className = "cs-block";
+  var l3 = document.createElement("label"); l3.className = "lbl"; l3.textContent = "CS名";
+  var i3 = document.createElement("input"); i3.type = "text"; i3.value = state.cs_name || "";
+  i3.placeholder = "例：山田";
+  b3.appendChild(l3); b3.appendChild(i3);
+  c.appendChild(b3);
+
+  var nav = document.createElement("div"); nav.className = "nav"; nav.style.justifyContent = "flex-end";
+  var btn = document.createElement("button");
+  btn.className = "btn btn-primary"; btn.type = "button"; btn.textContent = "次へ";
+  btn.addEventListener("click", function() {
+    var id = (i1.value || "").trim();
+    if (!id) { err.style.display = "block"; err.textContent = "院番号は必須です。"; i1.focus(); return; }
+    if (!SALON_ID_RE.test(id)) { err.style.display = "block"; err.textContent = "院番号は半角の数字（8桁まで）で入力してください。"; i1.focus(); return; }
+    state.salon_id = id;
+    state.cs_name = i3.value || "";
+    if (!state.cs_route) { err.style.display = "block"; err.textContent = "経路をお選びください。"; return; }
+    state.cs_header_done = true;
+    saveState();
+    postScreen("cs_header", state.cs_route, { extra: true });
+    render();
+  });
+  nav.appendChild(btn);
+  c.appendChild(nav);
+  app.appendChild(c);
+}
+
+var CS_Q1_LABEL_BY_STATE = {
+  "5": "使っている",
+  "4": "使っていたが、止めた",
+  "3": "知っているが、使っていない",
+  "2": "よく知らなかった"
+};
+
+function renderCSQuestionsOnePage() {
+  app.innerHTML = "";
+  var c = document.createElement("div");
+  c.className = "card";
+  var h = document.createElement("h1");
+  h.textContent = "CS用：院の回答を入力（すべて任意）";
+  c.appendChild(h);
+  var note = document.createElement("p"); note.className = "note";
+  note.textContent = "聞いた設問だけ入力し、ほかは空欄のまま送信してください。説明する前に、先に理由を伺います。";
+  c.appendChild(note);
+
+  var stateBlock = document.createElement("div"); stateBlock.className = "cs-block";
+  var sl = document.createElement("label"); sl.className = "lbl"; sl.textContent = "今の状態";
+  stateBlock.appendChild(sl);
+  var states = [
+    { no: "5", label: "使っている" },
+    { no: "4", label: "使っていたが、止めた" },
+    { no: "3", label: "知っているが、使っていない" },
+    { no: "2", label: "よく知らなかった" }
+  ];
+  var qArea = document.createElement("div");
+  qArea.style.marginTop = "6px";
+
+  states.forEach(function(s) {
+    var b = document.createElement("button");
+    b.className = "choice"; b.type = "button"; b.textContent = s.label;
+    if (state.answers._state_no === s.no) b.classList.add("selected");
+    b.addEventListener("click", function() {
+      var prevNo = state.answers._state_no;
+      if (prevNo && prevNo !== s.no) csClearStateAnswers(prevNo, s.no);
+      state.answers._state_no = s.no;
+      state.answers.q1 = CS_Q1_LABEL_BY_STATE[s.no] || "";
+      Array.prototype.slice.call(stateBlock.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+      b.classList.add("selected");
+      saveState();
+      postScreen("state_no", s.no);
+      postScreen("q1", state.answers.q1);
+      renderCSStateQuestions(qArea, s.no);
+    });
+    stateBlock.appendChild(b);
+  });
+  c.appendChild(stateBlock);
+  c.appendChild(qArea);
+
+  if (state.answers._state_no) renderCSStateQuestions(qArea, state.answers._state_no);
+
+  var nav = document.createElement("div"); nav.className = "nav"; nav.style.justifyContent = "flex-end";
+  var btn = document.createElement("button"); btn.className = "btn btn-primary"; btn.type = "button"; btn.textContent = "送信する";
+  btn.addEventListener("click", function() {
+    postScreen("_complete", "cs", { done: true, full: true });
+    app.innerHTML = "";
+    var done = document.createElement("div");
+    done.className = "card thanks";
+    done.innerHTML = "<h1>送信しました</h1><p>続けて別の院を入力するときは、画面を再読み込みしてください。</p>" +
+                     "<p class=\"note\">同じ院を入力し直すと、新しい行として記録されます（集計では最新の行を使います）。</p>";
+    app.appendChild(done);
+    setTimeout(clearStoredState, 600);
+  });
+  nav.appendChild(btn);
+  c.appendChild(nav);
+  app.appendChild(c);
+  window.scrollTo(0, 0);
+}
+
+// 状態を選び直したとき：前の状態の設問の答えを消す（選び直した先にもある設問は残す）
+function csClearStateAnswers(prevNo, nextNo) {
+  var keep = {};
+  csScreensForState(nextNo).forEach(function(scr) { keep[scr] = true; });
+  var cleared = {}, n = 0;
+  csScreensForState(prevNo).forEach(function(scr) {
+    if (keep[scr]) return;
+    ["", "_other", "_method", "_burden", "_method_other"].forEach(function(suf) {
+      var k = scr + suf;
+      if (!(k in state.answers)) return;
+      var had = state.answers[k];
+      delete state.answers[k];
+      if (had !== "" && had != null) { cleared[k] = ""; n++; }
+    });
+  });
+  if (n) postScreen("_clear", "", { values: cleared });
+  saveState();
+}
+
+// 設問の見出し：設問番号と、出し分けの条件（どの答えのときの設問か）を出す
+function csQuestionLabel(scr) {
+  var m = /^q([0-9]+)/.exec(scr);
+  var code = m ? "Q" + m[1] : scr;
+  var conds = [];
+  [["Q11", Q11_TO_Q12], ["Q9", Q9_TO_Q10], ["Q7", Q7_TO_Q8]].forEach(function(pair) {
+    Object.keys(pair[1]).forEach(function(ans) {
+      if (pair[1][ans] === scr) conds.push(pair[0] + "が「" + ans + "」");
+    });
+  });
+  if (scr === "q6_pre") conds.push("Q5が「はい」");
+  if (scr === "q6_none") conds.push("Q5が「いいえ」");
+  return code + (conds.length ? "（" + conds.join("／") + "のとき）" : "");
+}
+
+function csScreensForState(no) {
+  switch (no) {
+    case "5": return ["q11", "q12_rare", "q12_unsure", "q12_notseeing", "q12_notusing", "q12_using", "q14", "q17"];
+    case "4": return ["q9", "q10_burden", "q10_notell", "q10_notime", "q10_reask", "q19", "q17"];
+    case "3": return ["q7", "q8_enough", "q8_othermethod", "q8_question_burden", "q8_patient_burden", "q8_privacy", "q19", "q17"];
+    case "2": return ["q15", "q5", "q6_pre", "q6_none", "q17"];
+    default: return [];
+  }
+}
+
+function renderCSStateQuestions(area, no) {
+  area.innerHTML = "";
+  var screens = csScreensForState(no);
+  screens.forEach(function(scr) {
+    var q = QUESTIONS[scr];
+    if (!q) return;
+    var block = document.createElement("div");
+    block.className = "cs-block";
+    var lbl = document.createElement("div");
+    lbl.className = "lbl"; lbl.textContent = csQuestionLabel(scr) + "：" + (q.text || "");
+    lbl.style.cssText = "font-size:14px;font-weight:600;margin-bottom:6px;";
+    block.appendChild(lbl);
+    if (q.kind === "single") {
+      q.choices.forEach(function(ch) {
+        var b = document.createElement("button");
+        b.className = "choice"; b.type = "button"; b.textContent = label(ch);
+        var val = valueOf(ch);
+        if (state.answers[scr] === val) b.classList.add("selected");
+        b.addEventListener("click", function() {
+          state.answers[scr] = val;
+          Array.prototype.slice.call(block.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+          b.classList.add("selected");
+          var isOther = typeof ch === "object" && ch.other;
+          if (!isOther && state.answers[scr + "_other"]) state.answers[scr + "_other"] = "";
+          saveState();
+          postScreen(scr, val);
+        });
+        block.appendChild(b);
+      });
+      var hasOther = q.choices.some(function(x){ return typeof x === "object" && x.other; });
+      if (hasOther) {
+        var ta = document.createElement("textarea");
+        ta.rows = 2; ta.placeholder = "「その他」の内容（院の言葉で）";
+        ta.value = state.answers[scr + "_other"] || "";
+        ta.addEventListener("input", function() { state.answers[scr + "_other"] = ta.value; saveState(); });
+        ta.addEventListener("blur", function() { postScreen(scr + "_other", ta.value); });
+        block.appendChild(ta);
+      }
+    } else if (q.kind === "grouped_accordion") {
+      q.groups.forEach(function(g) {
+        var hd = document.createElement("div"); hd.className = "group-head"; hd.textContent = g.head;
+        block.appendChild(hd);
+        g.items.forEach(function(item) {
+          var b = document.createElement("button"); b.className = "choice"; b.type = "button"; b.textContent = item;
+          if (state.answers[scr] === item) b.classList.add("selected");
+          b.addEventListener("click", function() {
+            state.answers[scr] = item;
+            Array.prototype.slice.call(block.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+            b.classList.add("selected");
+            saveState();
+            postScreen(scr, item);
+          });
+          block.appendChild(b);
+        });
+      });
+      var ob = document.createElement("button");
+      ob.className = "choice"; ob.type = "button"; ob.textContent = q.otherLabel || "その他";
+      if (state.answers[scr] === (q.otherLabel || "その他")) ob.classList.add("selected");
+      ob.addEventListener("click", function() {
+        state.answers[scr] = q.otherLabel || "その他";
+        Array.prototype.slice.call(block.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+        ob.classList.add("selected");
+        saveState();
+        postScreen(scr, state.answers[scr]);
+      });
+      block.appendChild(ob);
+      var ta2 = document.createElement("textarea");
+      ta2.rows = 2; ta2.placeholder = "「その他」の内容（院の言葉で）";
+      ta2.value = state.answers[scr + "_other"] || "";
+      ta2.addEventListener("input", function() { state.answers[scr + "_other"] = ta2.value; saveState(); });
+      ta2.addEventListener("blur", function() { postScreen(scr + "_other", ta2.value); });
+      block.appendChild(ta2);
+    } else if (q.kind === "method_burden") {
+      q.methods.forEach(function(m) {
+        if (m.other) {
+          var b = document.createElement("button"); b.className = "choice"; b.type = "button"; b.textContent = m.label + "（方法）";
+          if (state.answers[scr + "_method"] === m.label) b.classList.add("selected");
+          b.addEventListener("click", function() {
+            state.answers[scr + "_method"] = m.label;
+            state.answers[scr + "_burden"] = "";
+            Array.prototype.slice.call(block.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+            b.classList.add("selected");
+            saveState();
+            postScreen(scr + "_method", m.label);
+          });
+          block.appendChild(b);
+          var ta3 = document.createElement("textarea");
+          ta3.rows = 2; ta3.placeholder = "方法「その他」の内容（院の言葉で）";
+          ta3.value = state.answers[scr + "_method_other"] || "";
+          ta3.addEventListener("input", function() { state.answers[scr + "_method_other"] = ta3.value; saveState(); });
+          ta3.addEventListener("blur", function() { postScreen(scr + "_method_other", ta3.value); });
+          block.appendChild(ta3);
+        } else {
+          var hd = document.createElement("div"); hd.className = "group-head"; hd.textContent = m.label;
+          block.appendChild(hd);
+          m.burdens.forEach(function(bu) {
+            var b = document.createElement("button"); b.className = "choice"; b.type = "button"; b.textContent = bu;
+            if (state.answers[scr + "_method"] === m.label && state.answers[scr + "_burden"] === bu) b.classList.add("selected");
+            b.addEventListener("click", function() {
+              state.answers[scr + "_method"] = m.label;
+              state.answers[scr + "_burden"] = bu;
+              Array.prototype.slice.call(block.querySelectorAll(".choice")).forEach(function(x){ x.classList.remove("selected"); });
+              b.classList.add("selected");
+              saveState();
+              postScreen(scr + "_method", m.label);
+              postScreen(scr + "_burden", bu);
+            });
+            block.appendChild(b);
+          });
+        }
+      });
+    } else if (q.kind === "text") {
+      var ta4 = document.createElement("textarea");
+      ta4.rows = 2; ta4.value = state.answers[scr] || "";
+      ta4.addEventListener("input", function() { state.answers[scr] = ta4.value; saveState(); });
+      ta4.addEventListener("blur", function() { postScreen(scr, ta4.value); });
+      block.appendChild(ta4);
+    }
+    area.appendChild(block);
+  });
+}
+
+/* ===========================================================================
+   初期化
+   =========================================================================== */
+if (state.salon_id && !SALON_ID_RE.test(state.salon_id)) {
+  state.salon_id_valid = false;
+} else {
+  state.salon_id_valid = !!state.salon_id;
+}
+saveState();
+render();
+
+document.addEventListener("keydown", function(e) {
+  if (e.key === "Escape") { goBack(); }
+});
+
+// 開閉する見出しの状態を、読み上げにも伝える
+function syncAccAria() {
+  Array.prototype.forEach.call(document.querySelectorAll(".acc-group"), function(g) {
+    var hd = g.querySelector(".acc-head");
+    if (hd) hd.setAttribute("aria-expanded", g.classList.contains("open") ? "true" : "false");
+  });
+}
+document.addEventListener("click", syncAccAria);
+syncAccAria();
+
+// 記述欄は1000字まで（長すぎる記述で最後の送信が受信側に拒否されないように）
+function capTextareas() {
+  Array.prototype.forEach.call(app.querySelectorAll("textarea"), function(t) { t.maxLength = 1000; });
+}
+try {
+  new MutationObserver(capTextareas).observe(app, { childList: true, subtree: true });
+} catch (e) {}
+capTextareas();
+</script>
+</body>
+</html>
